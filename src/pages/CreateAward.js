@@ -23,7 +23,7 @@ const CreateAward = () => {
   const { weekNumber } = useParams();
   const { getWeekByNumber } = useContext(WeekContext);
 
-  const currentWeek = useCallback(()=>getWeekByNumber(Number.parseInt(weekNumber)),[getWeekByNumber]);
+  const currentWeek = useCallback(()=>getWeekByNumber(Number.parseInt(weekNumber)),[getWeekByNumber,weekNumber]);
 
   const auth = useContext(UserContext);
   const { PopsBar, shamefulFailure, greatSuccess, clearPops } = usePops();

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import getDayName from "../utils/getDayname";
 import { Box, Dialog, Button, ListItemText, TextField, Typography, Stack } from "@mui/material";
 
@@ -10,7 +10,7 @@ const AttendanceSearch = ({
 }) => {
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState("");
-  const inputRef = useRef(null);
+  // const inputRef = useRef(null);
 
 
   useEffect(() => {

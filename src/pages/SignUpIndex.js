@@ -24,13 +24,13 @@ const SignUpIndex = () => {
 		initialState: [],
 		useToken: true,
 	});
-	const [selected, setSelected] = useState({
+	const [selected] = useState({
 		cabin: undefined,
 		week: undefined,
 	});
-	const select = (name, value) => {
-		setSelected((s) => ({ ...s, [name]: value }));
-	};
+	// const select = (name, value) => {
+	// 	setSelected((s) => ({ ...s, [name]: value }));
+	// };
 	useEffect(() => {
 		if (selected.cabin && selected.week) {
 

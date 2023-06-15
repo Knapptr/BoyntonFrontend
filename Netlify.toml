@@ -1,3 +1,7 @@
 [[redirects]]
 from = "/api/*"
 to = $TESTREROUTE
+
+[[redirects]]
+from = "/"
+to = "http://www.google.com"

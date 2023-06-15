@@ -1,7 +1,3 @@
 [[redirects]]
-from = "/api/*"
-to = $TESTREROUTE
-
-[[redirects]]
 from = "/apples"
 to = "http://www.google.com"

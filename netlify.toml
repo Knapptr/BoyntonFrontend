@@ -1,7 +1,7 @@
 [[redirects]]
 from = "/api/*"
-to = "boynton-dev.us-east-1.elasticbeanstalk.com/api/:splat"
+to = "https://www.boynton-dev.us-east-1.elasticbeanstalk.com/api/:splat"
 
 [[redirects]]
 from = "/auth/*"
-to = "boynton-dev.us-east-1.elasticbeanstalk.com/auth/:splat"
+to = "https://www.boynton-dev.us-east-1.elasticbeanstalk.com/auth/:splat"

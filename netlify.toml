@@ -1,3 +1,7 @@
 [[redirects]]
-from = "/apples"
-to = "/"$TESTREROUTE
+from = "/api/*"
+to = "boynton-dev.us-east-1.elasticbeanstalk.com/api/:splat"
+
+[[redirects]]
+from = "/auth/*"
+to = "boynton-dev.us-east-1.elasticbeanstalk.com/auth/:splat"

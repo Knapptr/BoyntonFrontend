@@ -96,9 +96,9 @@ const EditUserBox = ({
               />
             </Stack>
             <Box width={5 / 8}>
-              <FormControl fullWidth onChange={handleChange}>
+              <FormControl fullWidth >
                 <InputLabel>Role</InputLabel>
-                <Select label="Role" value={edits.role}>
+                <Select onChange={handleChange}label="Role" name="role" value={edits.role}>
                   {ROLES.map((role) => (
                     <MenuItem key={`role-${role}`}value={role}>{role}</MenuItem>
                   ))}

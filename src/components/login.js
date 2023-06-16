@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import usePops from "../hooks/usePops";
 import catchErrors from "../utils/fetchErrorHandling";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { handleUrlString } from "../fetchWithToken";
 
 const Login = () => {
   const auth = useContext(UserContext);
@@ -39,7 +40,7 @@ const Login = () => {
         password: formInputs.password,
       }),
     };
-    const result = await fetch("/auth/login", reqOptions);
+    const result = await fetch(handleUrlString("/auth/login"), reqOptions);
     const data = await catchErrors(result, (e) => {
       setFormInputs((f) => ({ ...f, password: "" }));
       shamefulFailure("SHAME!", e.message);

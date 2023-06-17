@@ -423,7 +423,9 @@ const UserSchedule = ({ sessions, user }) => {
     if (selectedSession === null){
      const currentSession = sessions.find(sess=>{
        const rn = new Date();
-       return sess.begins < rn && sess.ends > rn
+       const begins = new Date(sess.begins)
+       const ends = new Date(sess.ends)
+       return begins < rn && ends > rn
      }) 
       if(currentSession){
         setSelectedSession(currentSession.weekNumber)
@@ -442,7 +444,7 @@ const UserSchedule = ({ sessions, user }) => {
       };
       fetchSelected();
     }
-  }, [selectedSession, auth, user]);
+  }, [selectedSession, auth, user,sessions]);
 
   const [activityDetails, setActivityDetails] = useState({
     open: false,

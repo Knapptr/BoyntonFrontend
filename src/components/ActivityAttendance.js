@@ -13,6 +13,7 @@ import {
 import { styled } from "@mui/material/styles";
 import RemoveCircleFilledIcon from "@mui/icons-material/RemoveCircleOutlined";
 import RemoveCircleEmptyIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
+import fetchWithToken from "../fetchWithToken";
 
 const AttendantWrapper = styled(Box)(
   ({ theme, children, selected, checked, index }) => ({
@@ -61,19 +62,7 @@ const CamperAttendant = ({
   camperSelection,
 }) => {
   const assignHere = async () => {
-    toggleIsPresent(activity.sessionId, camper.sessionId);
-    const options = {
-      method: "PUT",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${localStorage.getItem("bearerToken")}`,
-      },
-      body: JSON.stringify({ isPresent: !camper.isPresent }),
-    };
-    await fetch(
-      `/api/camper-activities/${camper.activityId}/attendance`,
-      options
-    );
+    toggleIsPresent(activity.sessionId, camper);
   };
 
   return (

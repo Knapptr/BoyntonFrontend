@@ -135,7 +135,7 @@ const AttendanceDisplay = () => {
     return period.activities.reduce((acc,cv)=>acc + countUnaccounted(cv.campers),0)
   }
 
-  const toggleHere = (sessionId, camperSessionId) => {
+  const toggleHere = async (sessionId, camper) => {
     setUserInput((i) => !i);
     const updatedActivities = [...period.activities];
     const activityIndex = updatedActivities.findIndex(
@@ -144,7 +144,7 @@ const AttendanceDisplay = () => {
     const updatedActivity = { ...updatedActivities[activityIndex] };
     const updatedCampers = [...updatedActivity.campers];
     const updatedCamperIndex = updatedCampers.findIndex(
-      (c) => c.sessionId === camperSessionId
+      (c) => c.sessionId === camper.sessionId
     );
     const updatedCamper = { ...updatedCampers[updatedCamperIndex] };
     // console.log({ updatedCamper });
@@ -154,6 +154,19 @@ const AttendanceDisplay = () => {
     updatedActivities.splice(activityIndex, 1, updatedActivity);
     // console.log({ updatedActivities });
     setPeriod((p) => ({ ...p, activities: updatedActivities }));
+    // Make Request
+    const options = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("bearerToken")}`,
+      },
+      body: JSON.stringify({ isPresent: !camper.isPresent }),
+    };
+    await fetchWithToken(
+      `/api/camper-activities/${camper.activityId}/attendance`,
+      options,auth
+    );
   };
 
   const renderAllActivities = () => {

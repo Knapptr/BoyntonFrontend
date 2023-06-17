@@ -442,7 +442,7 @@ const UserSchedule = ({ sessions, user }) => {
       };
       fetchSelected();
     }
-  }, [selectedSession, auth, user]);
+  }, [selectedSession, auth, user,sessions]);
 
   const [activityDetails, setActivityDetails] = useState({
     open: false,

@@ -317,7 +317,7 @@ const UsersPage = () => {
   const updateUser = async () => {
     const url = `/api/users/${edit.user?.username}`;
     const opts = {
-      method: "PUT",
+      method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(edit.edits),
     };

@@ -31,6 +31,19 @@ const weeks = ["1", "2", "3", "4", "5", "6"];
 const drawerWidth = 1 / 3;
 const marginSize = 56;
 
+
+/** A helper function to count only overnight campers in a cabin */
+export const cabinIsAssignable = (cabinSession)=>{
+  const overnightTotal = cabinSession.campers.reduce((sum,camper)=>{
+    console.log({camper})
+    if(!camper.dayCamp){sum+=1}
+    return sum;
+  },0)
+  console.log({overnightTotal});
+  if (overnightTotal === cabinSession.capacity){return false}
+  return true
+}
+
 const CabinAssignmentRoutes = () => {
   const routes = [];
   for (const week of weeks) {
@@ -177,6 +190,7 @@ const CabinAssignment = ({ area, weekNumber }) => {
       (a, b) => a.age - b.age || a.lastName.localeCompare(b.lastName)
     );
   };
+  
   /** Send camper to cabin on the DB
    * @param {camperSession} camperSession an object with a camperId and a session Id (id)
    * @param {string} cabinNumber (a unique cabin identifier)
@@ -184,13 +198,8 @@ const CabinAssignment = ({ area, weekNumber }) => {
   const assignCabin = async (cabinSession) => {
     clearPops();
     const camperSessions = [...selectedCampers];
-    if (
-      camperSessions.length >
-      cabinSession.capacity - cabinSession.campers.length
-    ) {
-      shamefulFailure("SHAME!",`that cabin can't fit ${camperSessions.length} more campers`)
-      return;
-    }
+    if (cabinIsAssignable(cabinSession) || camperSessions.every(c=>c.dayCamp)) {
+
     removeSelectedFromUnassigned();
     updateCabinUI(cabinSession.name, [...selectedCampers]);
 
@@ -200,6 +209,11 @@ const CabinAssignment = ({ area, weekNumber }) => {
     // Update state from DB
     refreshCabins();
     getCampers();
+    }else{
+
+      shamefulFailure("SHAME!",`that cabin can't fit any more overnight campers`)
+      return;
+    }
   };
 
   /** Push selected campers into cabin selection (optimistic UI update)

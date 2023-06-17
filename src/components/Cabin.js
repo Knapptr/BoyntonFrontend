@@ -6,14 +6,33 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Badge,
   Box,
   Card,
+  Chip,
   IconButton,
   Stack,
   Typography,
 } from "@mui/material";
 import CamperItem from "./CamperItem";
+import { cabinIsAssignable } from "../pages/CabinAssignment";
 
+/** A utility function for counting camper types */
+const getCamperTotals = (campers) => {
+  const init = { dayCamp: 0, overnight: 0, fl: 0, total: 0 };
+  return campers.reduce((sums, camper) => {
+    if (camper.dayCamp) {
+      sums.dayCamp += 1;
+    } else {
+      sums.overnight += 1;
+    }
+    if (camper.fl) {
+      sums.fl += 1;
+    }
+    sums.total += 1;
+    return sums;
+  }, init);
+};
 const Cabin = ({
   assign,
   session,
@@ -22,12 +41,15 @@ const Cabin = ({
   // selectedCampers,
   // cabinsOnly,
 }) => {
+  const [openList, setOpenList] = useState(false);
 
-  const [openList,setOpenList] = useState(false);
-
-  useEffect(()=>{
-    if(openList && session.campers.length === 0){setOpenList(false)}
-  },[session.campers,openList])
+  const camperTotals = getCamperTotals(session.campers);
+  console.log({ camperTotals });
+  useEffect(() => {
+    if (openList && session.campers.length === 0) {
+      setOpenList(false);
+    }
+  }, [session.campers, openList]);
 
   /** Get min and max ages in cabin, ignoring FLs */
   const getMinMaxAge = () => {
@@ -53,21 +75,17 @@ const Cabin = ({
   return (
     <Card width={1}>
       <Box
-        disabled={session.campers.length === session.capacity}
+        disabled={!cabinIsAssignable(session)}
         onClick={(e) => {
           e.stopPropagation();
-          // if (list.length === session.capacity) {
-          //   console.log("Cabin is full.");
-          // } else {
-          assign(session, session.campers.length);
-          //}
+          assign(session);
         }}
       >
         <Stack
           direction="row"
           component="header"
-    justifyContent="space-between"
-    align-items="center"
+          justifyContent="space-between"
+          align-items="center"
           sx={{
             py: 1,
             px: { xs: 4, md: 2 },
@@ -75,27 +93,68 @@ const Cabin = ({
             color: "white",
           }}
         >
-    <Box>
-          <Typography variant="h5">{session.name}</Typography>
-    </Box>
-    <Box>
-    {session.campers.length === session.capacity && <Typography ml={1} variant="subtitle1" fontWeight="bold">full</Typography>}
-    </Box>
-    <Box ml="auto">
-            <Typography color="white" fontWeight="bold">
-              {session.campers.length}
+          <Box>
+            <Typography fontWeight="light" variant="caption">
+              cabin
             </Typography>
-          <Typography color="lightgrey" >
-            /{session.capacity}
-          </Typography>
-    </Box>
+            <Typography variant="h5">{session.name}</Typography>
+            <Typography
+              visibility={
+                camperTotals.overnight === session.capacity
+                  ? "visible"
+                  : "hidden"
+              }
+              fontWeight="light"
+              variant="caption"
+            >
+              overnight full
+            </Typography>
+          </Box>
+          <Stack alignItems="end" >
+              <Stack
+                direction="row"
+                alignItems="center"
+              >
+                <Typography variant="caption">total:</Typography>
+                <Typography fontWeight="bold">{camperTotals.total}</Typography>
+              </Stack>
+            <Stack direction="row" alignItems="center" >
+              <Stack direction="row">
+                <Typography variant="caption">overnight:</Typography>
+              </Stack>
+              <Typography color="white" fontWeight="bold">
+                {camperTotals.overnight}
+              </Typography>
+              <Typography color="lightgrey">/{session.capacity}</Typography>
+            </Stack>
+            <Stack justifyContent="end">
+              <Stack
+                visibility={camperTotals.dayCamp === 0 ? "hidden" : "visible"}
+                direction="row"
+                alignItems="center"
+   justifyContent="end" 
+              >
+                <Typography variant="caption">day:</Typography>
+                <Typography color="white" fontWeight="bold">
+                  {camperTotals.dayCamp}
+                </Typography>
+              </Stack>
+              <Stack direction="row" mt={1} spacing={3.2} justifyContent="end">
+                {[...Array(camperTotals.fl)].map(() => (
+                  <Badge color="warning" badgeContent="fl">
+                    <Box></Box>
+                  </Badge>
+                ))}
+              </Stack>
+            </Stack>
+          </Stack>
         </Stack>
 
         <Accordion
           expanded={openList}
           disabled={session.campers.length === 0}
           onChange={(e) => {
-            setOpenList(t=>!t);
+            setOpenList((t) => !t);
             e.stopPropagation();
           }}
         >
@@ -113,7 +172,7 @@ const Cabin = ({
               {session.campers.map((camper, index) => {
                 return (
                   <Stack
-                  key={`camper-cabin-${camper.id}`}
+                    key={`camper-cabin-${camper.id}`}
                     direction="row"
                     alignItems="center"
                     sx={{
@@ -127,7 +186,8 @@ const Cabin = ({
                   >
                     <CamperItem camper={camper}>
                       <IconButton
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           unassignCamper(camper.id);
                         }}
                         size="small"

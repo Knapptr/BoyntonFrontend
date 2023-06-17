@@ -56,7 +56,7 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <Stack justifyContent="center" mb={4}>
     <Stack direction="row" justifyContent="center" mx={3}>
-    <img id="loginlogo" src={LOGO} />
+    <img alt="Camp Leslie" id="loginlogo" src={LOGO} />
     </Stack>
           <Typography
             lineHeight={0.8}

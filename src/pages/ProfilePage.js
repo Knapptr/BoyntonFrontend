@@ -20,6 +20,7 @@ import {
   Fade,
   FormControl,
   Grid,
+  Link,
   MenuItem,
   Paper,
   Stack,
@@ -37,6 +38,7 @@ import {
 import { StaffBadge } from "../components/styled";
 import useWeeks from "../hooks/useWeeks";
 import { Helmet } from "react-helmet";
+import ActivityInformationDialog from "../components/ActivityDialog";
 
 const AddScoreDialog = ({ onClose, show, week }) => {
   const TEAMS = ["Naumkeag", "Tahattawan"];
@@ -135,7 +137,7 @@ const AddScoreDialog = ({ onClose, show, week }) => {
             <Button
               variant="contained"
               color="success"
-              enabled={allFieldsFilled()?"false":undefined}
+              enabled={allFieldsFilled() ? "false" : undefined}
               onClick={() => {
                 if (allFieldsFilled()) {
                   handleSubmit();
@@ -153,8 +155,7 @@ const AddScoreDialog = ({ onClose, show, week }) => {
 const ScorePane = () => {
   const auth = useContext(UserContext);
   const [scores, setScores] = useState(null);
-  const { selectedWeek, WeekSelection} =
-    useWeeks();
+  const { selectedWeek, WeekSelection } = useWeeks();
 
   const getScore = useCallback(
     async (weekNumber) => {
@@ -343,68 +344,68 @@ const ProfilePage = () => {
   }, [handleGetUser]);
   return (
     <>
-    <Helmet>
-      <title>{auth.userData.user.username}-Boynton</title>
-    </Helmet>
-    <Box id="profilePage" width={1} py={2} px={1}>
-      {userData && (
-        <>
-          <Container maxWidth="md">
-            <Box component="header" marginBottom={4}>
-              <Card sx={{ paddingBottom: 1 }} elevation={4}>
-                <CardContent>
-                  <Box marginBottom={1}>
-                    <Typography
-                      variant="subtitle1"
-                      color="text.secondary"
-                      textAlign="left"
-                      component="h3"
+      <Helmet>
+        <title>{auth.userData.user.username}-Boynton</title>
+      </Helmet>
+      <Box id="profilePage" width={1} py={2} px={1}>
+        {userData && (
+          <>
+            <Container maxWidth="md">
+              <Box component="header" marginBottom={4}>
+                <Card sx={{ paddingBottom: 1 }} elevation={4}>
+                  <CardContent>
+                    <Box marginBottom={1}>
+                      <Typography
+                        variant="subtitle1"
+                        color="text.secondary"
+                        textAlign="left"
+                        component="h3"
+                      >
+                        {userData.username}
+                      </Typography>
+                      <Typography variant="h5" textAlign="left" component="h3">
+                        {userData.firstName} {userData.lastName}
+                      </Typography>
+                    </Box>
+                    <Divider color="secondary" sx={{ marginY: 1 }} />
+                    <Stack
+                      id="badgesList"
+                      direction="row"
+                      spacing={1}
+                      useFlexGap
+                      flexWrap="wrap"
+                      justifyContent="center"
+                      paddingX={2}
                     >
-                      {userData.username}
-                    </Typography>
-                    <Typography variant="h5" textAlign="left" component="h3">
-                      {userData.firstName} {userData.lastName}
-                    </Typography>
-                  </Box>
-                  <Divider color="secondary" sx={{ marginY: 1 }} />
-                  <Stack
-                    id="badgesList"
-                    direction="row"
-                    spacing={1}
-                    useFlexGap
-                    flexWrap="wrap"
-                    justifyContent="center"
-                    paddingX={2}
-                  >
-                    {userBadges().map((badge) => (
-                      <StaffBadge
-                      key={`badge-${userData.username}-${badge.type}`}
-                        size="small"
-                        variant="outlined"
-                        type={badge.type}
-                        label={badge.label}
-                      />
-                    ))}
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Box>
-          </Container>
-          <Grid
-            container
-            spacing={{ xs: 2, sm: 1, md: 2, lg: 3 }}
-            justifyContent="center"
-          >
-            <Grid item xs={12} sm={12} md={7} lg={8}>
-              <UserSchedule user={userData} sessions={userData.sessions} />
+                      {userBadges().map((badge) => (
+                        <StaffBadge
+                          key={`badge-${userData.username}-${badge.type}`}
+                          size="small"
+                          variant="outlined"
+                          type={badge.type}
+                          label={badge.label}
+                        />
+                      ))}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Box>
+            </Container>
+            <Grid
+              container
+              spacing={{ xs: 2, sm: 1, md: 2, lg: 3 }}
+              justifyContent="center"
+            >
+              <Grid item xs={12} sm={12} md={7} lg={8}>
+                <UserSchedule user={userData} sessions={userData.sessions} />
+              </Grid>
+              <Grid item xs={12} sm={12} md={5} lg={4}>
+                <ScorePane />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={12} md={5} lg={4}>
-              <ScorePane />
-            </Grid>
-          </Grid>
-        </>
-      )}
-    </Box>
+          </>
+        )}
+      </Box>
     </>
   );
 };
@@ -434,8 +435,42 @@ const UserSchedule = ({ sessions, user }) => {
     }
   }, [selectedSession, auth, user]);
 
+  const [activityDetails, setActivityDetails] = useState({
+    open: false,
+    activitySessionId: null,
+    dayName: null,
+    periodNumber: null,
+  });
+
+  const viewActivityDetails = (activitySessionId, dayName, periodNumber,periodId) => {
+    setActivityDetails({
+      open: true,
+      activitySessionId,
+      dayName,
+      periodNumber,
+      periodId,
+    });
+  };
+  const closeActivityDetails = () => {
+    setActivityDetails({
+      open: false,
+      activitySessionId: null,
+      dayName: null,
+      periodNumber: null,
+      periodId: null,
+    });
+  };
+
   return (
     <>
+      <ActivityInformationDialog
+        open={activityDetails.open}
+        onClose={closeActivityDetails}
+        dayName={activityDetails.dayName}
+        periodNumber={activityDetails.periodNumber}
+        activitySessionId={activityDetails.activitySessionId}
+    periodId={activityDetails.periodId}
+      />
       <Card sx={{ paddingY: 2, paddingX: 1 }}>
         <Typography variant="h5" component="h4">
           My Schedule
@@ -458,7 +493,7 @@ const UserSchedule = ({ sessions, user }) => {
           <Fade in={!!currentSchedule}>
             <Box>
               {currentSchedule.map((day) => (
-                <TableContainer key={`sched-day-${day.name}`}component={Paper}>
+                <TableContainer key={`sched-day-${day.name}`} component={Paper}>
                   <header>
                     <Typography variant="h5" component="h6">
                       {day.name}
@@ -468,14 +503,28 @@ const UserSchedule = ({ sessions, user }) => {
                     <TableHead>
                       <TableRow>
                         {day.periods.map((p) => (
-                          <TableCell key={`period-cell-${p.number}`}>Act {p.number}</TableCell>
+                          <TableCell key={`period-cell-${p.number}`}>
+                            Act {p.number}
+                          </TableCell>
                         ))}
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       <TableRow>
-                        {day.periods.map((p,i) => (
-                          <TableCell key={`period-act-${i}`}>{p.activityName}</TableCell>
+                        {day.periods.map((p, i) => (
+                          <TableCell key={`period-act-${i}`}>
+                          {p.activityName === "OFF" && <Typography>off</Typography>}
+                          {p.activityName !== "OFF" &&
+                            <Button
+                             variant="outlined" 
+                            size="small"
+                            onClick={()=>{
+                              viewActivityDetails(p.activitySessionId,day.name,p.number,p.id)
+                            }}
+                            >
+                              {p.activityName}
+                            </Button>}
+                          </TableCell>
                         ))}
                       </TableRow>
                     </TableBody>

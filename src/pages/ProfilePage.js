@@ -419,6 +419,16 @@ const UserSchedule = ({ sessions, user }) => {
   };
 
   useEffect(() => {
+    // automatically select current session if in one
+    if (selectedSession === null){
+     const currentSession = sessions.find(sess=>{
+       const rn = new Date();
+       return sess.begins < rn && sess.ends > rn
+     }) 
+      if(currentSession){
+        setSelectedSession(currentSession.weekNumber)
+      }
+    }
     if (selectedSession !== null) {
       const fetchSelected = async () => {
         const url = `/api/users/${user.username}/schedule/${selectedSession}`;

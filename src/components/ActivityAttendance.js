@@ -13,7 +13,6 @@ import {
 import { styled } from "@mui/material/styles";
 import RemoveCircleFilledIcon from "@mui/icons-material/RemoveCircleOutlined";
 import RemoveCircleEmptyIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
-import fetchWithToken from "../fetchWithToken";
 
 const AttendantWrapper = styled(Box)(
   ({ theme, children, selected, checked, index }) => ({

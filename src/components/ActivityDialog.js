@@ -1,8 +1,5 @@
-import { Close, ExpandMore } from "@mui/icons-material";
+import { Close} from "@mui/icons-material";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
   Button,
   Card,
@@ -50,7 +47,7 @@ const ActivityInformationDialog = ({
     if (activitySessionId !== null) {
       getActivityData();
     }
-  }, [activitySessionId]);
+  }, [activitySessionId,auth]);
   return (
     <Dialog fullScreen open={open} onClose={onClose} fullWidth>
       <DialogActions>

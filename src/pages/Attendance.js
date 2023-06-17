@@ -44,13 +44,21 @@ const AttendanceDisplay = () => {
     }
   }, [periodId, auth]);
 
+  /** Load period on page load. Handle clean up of recurring stuff / fetches **/
+  useEffect(() => {
+    getPeriod()
+    return () => {
+      clearInterval(intervalRef.current);
+      clearTimeout(timeoutRef.current);
+      abortControllerRef.current?.abort();
+    };
+  }, [getPeriod]);
+
   // Set period to undefined any time id changes
   useEffect(() => {
     setPeriod(undefined);
   }, [periodId]);
 
-  // User input boolean value meaans nothing, in is just a switch to indicate that input has happened
-  const [userInput, setUserInput] = useState(false);
   // track user input and reset timer on every attendance change
 
   const startTimer = useCallback(() => {
@@ -82,16 +90,6 @@ const AttendanceDisplay = () => {
   }, [getPeriod]);
 
 
-  /** Handle user inputs and recurring requests */
-  useEffect(() => {
-    abortControllerRef.current?.abort();
-    startTimer();
-    return () => {
-      clearInterval(intervalRef.current);
-      clearTimeout(timeoutRef.current);
-      abortControllerRef.current?.abort();
-    };
-  }, [startTimer, userInput]);
 
   const openSearchModal = () => {
     setShowSearchModal(true);
@@ -136,7 +134,11 @@ const AttendanceDisplay = () => {
   }
 
   const toggleHere = async (sessionId, camper) => {
-    setUserInput((i) => !i);
+    // Abort any oustanding fetch req
+    abortControllerRef.current?.abort();
+
+    // Eoger UI upates
+
     const updatedActivities = [...period.activities];
     const activityIndex = updatedActivities.findIndex(
       (a) => a.sessionId === sessionId
@@ -147,13 +149,12 @@ const AttendanceDisplay = () => {
       (c) => c.sessionId === camper.sessionId
     );
     const updatedCamper = { ...updatedCampers[updatedCamperIndex] };
-    // console.log({ updatedCamper });
     updatedCamper.isPresent = !updatedCamper.isPresent;
     updatedCampers.splice(updatedCamperIndex, 1, updatedCamper);
     updatedActivity.campers = updatedCampers;
     updatedActivities.splice(activityIndex, 1, updatedActivity);
-    // console.log({ updatedActivities });
     setPeriod((p) => ({ ...p, activities: updatedActivities }));
+
     // Make Request
     const options = {
       method: "POST",
@@ -167,6 +168,8 @@ const AttendanceDisplay = () => {
       `/api/camper-activities/${camper.activityId}/attendance`,
       options,auth
     );
+    // Update UI from DB
+    startTimer();
   };
 
   const renderAllActivities = () => {

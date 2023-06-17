@@ -2,7 +2,7 @@ import ParkTwoToneIcon from "@mui/icons-material/ParkTwoTone";
 import { useState, useContext } from "react";
 import UserContext from "./UserContext";
 import { useLocation, useNavigate } from "react-router-dom";
-// import logo from "../cl.png";
+import LOGO from "../resources/CLtransparentsmall.png"
 import usePops from "../hooks/usePops";
 import catchErrors from "../utils/fetchErrorHandling";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
@@ -54,21 +54,22 @@ const Login = () => {
   return (
     <Box maxWidth={400}>
       <form onSubmit={handleSubmit}>
-        <Stack justifyContent="center" mb={8}>
+        <Stack justifyContent="center" mb={4}>
+    <Stack direction="row" justifyContent="center" mx={3}>
+    <img id="loginlogo" src={LOGO} />
+    </Stack>
           <Typography
             lineHeight={0.8}
-            variant="h1"
+            variant="h3"
             textAlign="center"
+    letterSpacing={0.01}
             fontWeight="bold"
-            color="primary"
+            color="black"
           >
-            Boynton
-          </Typography>
-          <Typography variant="h3" textAlign="center" color="secondary">
-            Camp Leslie
+            boynton
           </Typography>
         </Stack>
-        <Box display="flex" flexDirection="column">
+        <Box display="flex" flexDirection="column" mx={3}>
           <Stack spacing={2}>
             <TextField
               inputProps={{

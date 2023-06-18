@@ -34,7 +34,6 @@ const SignUpIndex = () => {
 	useEffect(() => {
 		if (selected.cabin && selected.week) {
 
-			// setShowAccordion(false);
 			navigate(`/schedule/sign-up/${selected.cabin}/${selected.week}`)
 		}
 	}, [navigate,selected.cabin, selected.week])

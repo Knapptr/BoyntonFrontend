@@ -1,5 +1,5 @@
 import "styled-components/macro";
-import { AppBar, Divider, Drawer, List, ListItem, ListItemButton, ListItemText, Toolbar, Typography, Button, Menu,  MenuItem, Stack } from "@mui/material";
+import { AppBar, Divider, Drawer, List, ListItem, ListItemButton, ListItemText, Toolbar, Typography, Button, Menu,  MenuItem, Stack,} from "@mui/material";
 // import { useLocation } from "react-router-dom";
 import ParkTwoToneIcon from '@mui/icons-material/ParkTwoTone';
 import { Box } from "@mui/system";
@@ -8,6 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import { isAdmin, isProgramming, isUnitHead } from "../utils/permissions";
 import UserContext from "./UserContext";
+import DownloadAwardsMenu from "./DownloadAwardsAccordion";
 
 // Consts
 const drawerWidth = 240;
@@ -41,7 +42,7 @@ const scheduleMenuOptions =[
 
 // Nav items for admin only
 const adminNavItems = [
-  {label: "Users", url: "/users" }
+  {label: "Users", url: "/users" },
 ]
 
 /** Filter role based links on reqRole property*/
@@ -139,6 +140,7 @@ const MenuNav = ({ title,items,onClick }) => {
     <Button onClick={()=>{handleItemClick(item)}}href={item.url}>{item.label}</Button>
 
       </MenuItem>)}
+    <MenuItem><DownloadAwardsMenu handleParentClose={handleClose} /></MenuItem>
       </Menu>
     </>
   )
@@ -179,7 +181,10 @@ function NavDrawer(props) {
       <Divider />
 
     {/* Admin items at bottom */}
-    {isAdmin(auth)&&<DrawerNav items={adminNavItems} auth={auth} />}
+    {isAdmin(auth)&&<>
+        <DownloadAwardsMenu drawerMenu />
+        <DrawerNav items={adminNavItems} auth={auth} />
+        </>}
       <Box
         sx={{ display: 'flex', width: "100%", justifyContent: "center", marginTop: "4rem" }}
       >
@@ -238,6 +243,7 @@ function NavDrawer(props) {
             
     {isAdmin(auth) &&
             <MenuNav auth={auth} title="Admin" items={adminNavItems} />
+
     }
               <Button
                 sx={{ marginLeft: "2rem" }}

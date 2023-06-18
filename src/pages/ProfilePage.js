@@ -38,6 +38,7 @@ import { StaffBadge } from "../components/styled";
 import useWeeks from "../hooks/useWeeks";
 import { Helmet } from "react-helmet";
 import ActivityInformationDialog from "../components/ActivityDialog";
+import DailySchedules from "../components/Schedule";
 
 const AddScoreDialog = ({ onClose, show, week }) => {
   const TEAMS = ["Naumkeag", "Tahattawan"];
@@ -399,7 +400,13 @@ const ProfilePage = () => {
                 <UserSchedule user={userData} sessions={userData.sessions} />
               </Grid>
               <Grid item xs={12} sm={12} md={5} lg={4}>
+          <Stack spacing={2}>
                 <ScorePane />
+          <Paper sx={{py:2,px:1}}>
+          <Typography variant="h5">Daily Schedule</Typography>
+                <DailySchedules />
+          </Paper>
+          </Stack>
               </Grid>
             </Grid>
           </>
@@ -420,15 +427,15 @@ const UserSchedule = ({ sessions, user }) => {
 
   useEffect(() => {
     // automatically select current session if in one
-    if (selectedSession === null){
-     const currentSession = sessions.find(sess=>{
-       const rn = new Date();
-       const begins = new Date(sess.begins)
-       const ends = new Date(sess.ends)
-       return begins < rn && ends > rn
-     }) 
-      if(currentSession){
-        setSelectedSession(currentSession.weekNumber)
+    if (selectedSession === null) {
+      const currentSession = sessions.find((sess) => {
+        const rn = new Date();
+        const begins = new Date(sess.begins);
+        const ends = new Date(sess.ends);
+        return begins < rn && ends > rn;
+      });
+      if (currentSession) {
+        setSelectedSession(currentSession.weekNumber);
       }
     }
     if (selectedSession !== null) {
@@ -444,7 +451,7 @@ const UserSchedule = ({ sessions, user }) => {
       };
       fetchSelected();
     }
-  }, [selectedSession, auth, user,sessions]);
+  }, [selectedSession, auth, user, sessions]);
 
   const [activityDetails, setActivityDetails] = useState({
     open: false,
@@ -453,7 +460,12 @@ const UserSchedule = ({ sessions, user }) => {
     periodNumber: null,
   });
 
-  const viewActivityDetails = (activitySessionId, dayName, periodNumber,periodId) => {
+  const viewActivityDetails = (
+    activitySessionId,
+    dayName,
+    periodNumber,
+    periodId
+  ) => {
     setActivityDetails({
       open: true,
       activitySessionId,
@@ -480,7 +492,7 @@ const UserSchedule = ({ sessions, user }) => {
         dayName={activityDetails.dayName}
         periodNumber={activityDetails.periodNumber}
         activitySessionId={activityDetails.activitySessionId}
-    periodId={activityDetails.periodId}
+        periodId={activityDetails.periodId}
       />
       <Card sx={{ paddingY: 2, paddingX: 1 }}>
         <Typography variant="h5" component="h4">
@@ -524,17 +536,25 @@ const UserSchedule = ({ sessions, user }) => {
                       <TableRow>
                         {day.periods.map((p, i) => (
                           <TableCell key={`period-act-${i}`}>
-                          {p.activityName === "OFF" && <Typography>off</Typography>}
-                          {p.activityName !== "OFF" &&
-                            <Button
-                             variant="outlined" 
-                            size="small"
-                            onClick={()=>{
-                              viewActivityDetails(p.activitySessionId,day.name,p.number,p.id)
-                            }}
-                            >
-                              {p.activityName}
-                            </Button>}
+                            {p.activityName === "OFF" && (
+                              <Typography>off</Typography>
+                            )}
+                            {p.activityName !== "OFF" && (
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={() => {
+                                  viewActivityDetails(
+                                    p.activitySessionId,
+                                    day.name,
+                                    p.number,
+                                    p.id
+                                  );
+                                }}
+                              >
+                                {p.activityName}
+                              </Button>
+                            )}
                           </TableCell>
                         ))}
                       </TableRow>

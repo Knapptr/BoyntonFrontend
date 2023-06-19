@@ -181,7 +181,7 @@ const CreateSchedulePage = () => {
               selectedCampers={selectedCampers}
               clearSelection={clearSelection}
               cabinName={cabin}
-              periodId={getPeriod().id}
+              period={getPeriod()}
             />
           </Box>
           <SelectDayPeriod

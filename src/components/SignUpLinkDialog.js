@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material"
+import { Button,  Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material"
 
 const SignUpLinkDialog = ({open,onClose,url})=>{
   return <Dialog open={open} onClose={onClose} fullWidth maxWidth="xl">

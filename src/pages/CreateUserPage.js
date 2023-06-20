@@ -11,7 +11,6 @@ import {
   Divider,
   FormControl,
 } from "@mui/material";
-import { clear } from "@testing-library/user-event/dist/clear";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchWithoutToken } from "../fetchWithToken";

@@ -27,7 +27,7 @@ const ActivityList = styled(Box)(({ bg, theme }) => ({
 }));
 
 const SelectActivities = ({
-  periodId,
+  period,
   cabinName,
   selectedCampers,
   handleSelectCamper,
@@ -38,7 +38,7 @@ const SelectActivities = ({
     activityLists,
     setLists,
     refresh,
-  } = useActivityAttendance(periodId, cabinName);
+  } = useActivityAttendance(period.id, cabinName);
 
   const auth = useContext(UserContext);
 
@@ -143,19 +143,6 @@ const SelectActivities = ({
                           }
                           label={`${camper.firstName} ${camper.lastName} ${camper.age}`}
                         />
-                        /*<CamperItem
-                            selectable
-                            camper={camper}
-                            key={`unassigned-camper-${camper.camperSessionId}`}
-                            isSelected={selectedCampers.some(
-                              (sc) =>
-                                sc.camper.camperSessionId ===
-                                camper.camperSessionId
-                            )}
-                            handleSelect={() =>
-                              handleSelectCamper(camper, "unassigned")
-                            }
-                          ></CamperItem>*/
                       ))}
                 </Stack>
               </Box>
@@ -189,6 +176,7 @@ const SelectActivities = ({
                 alignItems="stretch"
                 py={1}
               >
+            {period.allWeek && <Typography variant="h6" bgcolor="primary.main" color="white">All Week Activity</Typography>}
                 {activityLists.activityIds &&
                   activityLists.activityIds.map((aid, index) => (
                     <ActivityList

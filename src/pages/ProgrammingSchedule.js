@@ -23,6 +23,7 @@ import {
   ListItemText,
   ToggleButtonGroup,
   ToggleButton,
+  Chip,
 } from "@mui/material";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { useParams } from "react-router-dom";
@@ -227,8 +228,10 @@ const ProgrammingSchedule = () => {
                   alignItems="start"
                   spacing={0.5}
                 >
-                  <Grid item xs={12} component="header" bgcolor="secondary.main">
+                  <Grid item xs={12} component="header" position="relative" bgcolor="secondary.main">
+                {period.allWeek && <Chip sx={{position:"absolute",top:4,left:4}}color="primary" label="All Week"/>}
                     <Typography variant="h6">Act {period.number}</Typography>
+
                     <IconButton
                       color="success"
                       onClick={() => {
@@ -262,7 +265,7 @@ const ProgrammingSchedule = () => {
                             onClick={() => {
                               if (
                                 !waitingForDeleteRequest.includes(
-                                  activity.sessinId
+                                  activity.sessionId
                                 )
                               ) {
                                 handleDeleteRequest(activity.sessionId);

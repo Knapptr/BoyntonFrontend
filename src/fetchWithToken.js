@@ -13,6 +13,21 @@ const fetchWithToken = async (url, options = {}, auth) => {
 		return { status: 400, message: `Failed to Fetch Data. Something Went Wrong. Check your network connection.` }
 	}
 };
+export const fetchWithoutToken = async (url, options = {}) => {
+	// Send requests to api url
+	const urlRoute = handleUrlString(url);
+
+	const optionsWithToken = {
+		...options,
+		headers: { ...options.headers},
+	};
+	try {
+		const response = await fetch(urlRoute, optionsWithToken);
+		return response;
+	} catch {
+		return { status: 400, message: `Failed to Fetch Data. Something Went Wrong. Check your network connection.` }
+	}
+};
 
 export default fetchWithToken
 

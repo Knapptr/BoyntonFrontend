@@ -1,24 +1,21 @@
 import ParkTwoToneIcon from "@mui/icons-material/ParkTwoTone";
-import { useState, useContext } from "react";
-import UserContext from "./UserContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState} from "react";
 import LOGO from "../resources/CLtransparentsmall.png"
 import usePops from "../hooks/usePops";
-import catchErrors from "../utils/fetchErrorHandling";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { handleUrlString } from "../fetchWithToken";
+import useLogin from "../hooks/useLogin";
 
 const Login = () => {
-  const auth = useContext(UserContext);
   const [formInputs, setFormInputs] = useState({
     username: "",
     password: "",
   });
   const { PopsBar, shamefulFailure,clearPops } = usePops();
 
-  const location = useLocation();
-  const { cameFrom } = location.state || { cameFrom: null };
-  const navigate = useNavigate();
+  const {login} = useLogin({onErr:(e)=>{ shamefulFailure("SHAME!", e.message)},onSubmit: ()=>{
+    setFormInputs((f)=>({...f,password:""}))
+  }})
+
   const handleUpdate = (e) => {
     clearPops();
     const field = e.target.name;
@@ -32,24 +29,8 @@ const Login = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const reqOptions = {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        username: formInputs.username,
-        password: formInputs.password,
-      }),
-    };
-    const result = await fetch(handleUrlString("/auth/login"), reqOptions);
-    const data = await catchErrors(result, (e) => {
-      setFormInputs((f) => ({ ...f, password: "" }));
-      shamefulFailure("SHAME!", e.message);
-    });
-    if (data) {
-      const userData = await data.json();
-      auth.logIn(userData.token, userData.user);
-      navigate(cameFrom || "/");
-    }
+    const data = {username:formInputs.username,password:formInputs.password}
+    login(data)
   };
   return (
     <Box maxWidth={400}>

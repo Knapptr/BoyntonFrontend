@@ -22,6 +22,7 @@ import CreateSchedulePage from "./pages/CreateSchedule";
 import AttendanceDisplay from "./pages/Attendance";
 import { UserContextProvider } from "./components/UserContext";
 import { WeekContextProvider } from "./components/WeekContext";
+import CreateUserPage from "./pages/CreateUserPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
     <UserContextProvider>
         <BrowserRouter>
           <Routes>
+    <Route path="sign-up" element = {<CreateUserPage />}/>
             <Route path="login" element={<LoginPage />} />
             <Route path="slay" element={<Slay />} />
             <Route

@@ -28,6 +28,8 @@ import {
 } from "@mui/material";
 import useWeeks from "../hooks/useWeeks";
 import { AddCircle, DeleteSharp, Edit } from "@mui/icons-material";
+import SignUpLinkButton from "../components/SignUpLinkButton";
+import SignUpLinkDialog from "../components/SignUpLinkDialog";
 
 const ROLES = ["counselor", "programming", "unit_head", "admin"];
 
@@ -200,6 +202,16 @@ const UsersPage = () => {
   const auth = useContext(UserContext);
 
   const [users, setUsers] = useState([]);
+  
+  const [signUpLink,setSignUpLink] = useState(null);
+
+  const handleSignUpToken = (token)=>{
+    const url = `${process.env.REACT_APP_ROOT_URL}/sign-up/${token}`
+    setSignUpLink(url);
+  }
+  const handleLinkClose = ()=>{
+    setSignUpLink(null);
+  }
 
   const [edit, setEdit] = useState({
     type: editTypes.NONE,
@@ -349,6 +361,7 @@ const UsersPage = () => {
 
   return (
     <>
+    <SignUpLinkDialog open={signUpLink !== null} onClose={handleLinkClose} url={signUpLink} />
       <h1>Users</h1>
       {weeks && (
         <>
@@ -419,7 +432,7 @@ const UsersPage = () => {
               <TableCell>
                 <Typography color="white">Role</Typography>
               </TableCell>
-              <TableCell colSpan={2}>
+              <TableCell>
                 <Button
                   variant="contained"
                   color="primary"
@@ -428,6 +441,9 @@ const UsersPage = () => {
                 >
                   Create New User
                 </Button>
+              </TableCell>
+              <TableCell>
+    <SignUpLinkButton buttonProps={{color:"warning",variant:"contained"}} onGetToken={handleSignUpToken}/>
               </TableCell>
             </TableRow>
           </TableHead>

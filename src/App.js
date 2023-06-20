@@ -30,7 +30,7 @@ function App() {
     <UserContextProvider>
         <BrowserRouter>
           <Routes>
-    <Route path="sign-up" element = {<CreateUserPage />}/>
+    <Route path="sign-up/:signUpToken" element = {<CreateUserPage />}/>
             <Route path="login" element={<LoginPage />} />
             <Route path="slay" element={<Slay />} />
             <Route
@@ -52,7 +52,7 @@ function App() {
                 }
               ></Route>
 
-              <Route path="award/:weekNumber" element={<CreateAward />} />
+              <Route path="award/:weekNumber" element={<Protected><CreateAward /></Protected>} />
               <Route path="cabins/">
                 {CabinAssignmentRoutes()}{" "}
                 <Route path="list/:weekNumber">
@@ -88,7 +88,7 @@ function App() {
                 <Route path="sign-up" element={<SignUpIndex />}>
                   <Route
                     path=":cabin/:weekNumber"
-                    element={<CreateSchedulePage />}
+                    element={<Protected><CreateSchedulePage /></Protected>}
                   />
                 </Route>
 
@@ -104,7 +104,7 @@ function App() {
 
                 <Route
                   path="attendance/:periodId"
-                  element={<AttendanceDisplay />}
+                  element={<Protected><AttendanceDisplay /></Protected>}
                 />
               </Route>
             </Route>

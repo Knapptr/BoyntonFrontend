@@ -15,12 +15,15 @@ export const getUser = () => {
 
 const UserContext = createContext(getUser());
 
+
 export const useUserData = () => {
     const [userData, setUserData] = useState(getUser());
-    const logOut = () => {
+
+    const logOut = (callback=()=>{}) => {
         localStorage.removeItem("user")
         localStorage.removeItem("bearerToken")
         setUserData({ user: null, token: null })
+        callback()
     }
     const logIn = (token, userData) => {
         localStorage.setItem("bearerToken", token)

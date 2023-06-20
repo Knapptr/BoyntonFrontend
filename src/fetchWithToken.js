@@ -1,3 +1,5 @@
+import { redirect } from "react-router-dom";
+
 const fetchWithToken = async (url, options = {}, auth) => {
 	// Send requests to api url
 	const urlRoute = handleUrlString(url);
@@ -8,6 +10,11 @@ const fetchWithToken = async (url, options = {}, auth) => {
 	};
 	try {
 		const response = await fetch(urlRoute, optionsWithToken);
+		if(response.status === 401){
+			//logout
+			auth.logOut()
+			redirect("/login")
+		}
 		return response;
 	} catch {
 		return { status: 400, message: `Failed to Fetch Data. Something Went Wrong. Check your network connection.` }

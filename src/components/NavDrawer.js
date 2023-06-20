@@ -191,7 +191,7 @@ function NavDrawer(props) {
         <Button
           variant="outlined"
           color="warning"
-          onClick={auth.logOut}>
+          onClick={()=>{auth.logOut()}}>
           Log Out
         </Button>
       </Box>
@@ -247,7 +247,7 @@ function NavDrawer(props) {
     }
               <Button
                 sx={{ marginLeft: "2rem" }}
-                onClick={auth.logOut}
+                onClick={()=>{auth.logOut()}}
                 variant="outlined"
     size="small"
                 color="warning" >Log Out </Button>

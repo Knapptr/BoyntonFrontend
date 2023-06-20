@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { clear } from "@testing-library/user-event/dist/clear";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { fetchWithoutToken } from "../fetchWithToken";
 import useLogin from "../hooks/useLogin";
 import usePops from "../hooks/usePops";
@@ -37,24 +38,30 @@ const badgeSelections = [
 ];
 
 const CreateUserPage = () => {
+  const {signUpToken} = useParams()
   const {login} = useLogin({
-    onErr: (e)=>{console.log("there was an error")},
+    onErr: (e)=>{console.log("there was an error:");console.log(e)},
   })
   const { PopsBar,shamefulFailure,clearPops } = usePops();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     clearPops();
-    const {confirmPassword,createSecret, password,...rest} = formInputs;
+    const {confirmPassword,username,sessions, password,...everythingElse} = formInputs;
     if(password !== confirmPassword){
         shamefulFailure("SHAME","Passwords must match")
       return;
     }
-    const url = "/auth/create"
+    const url = `/auth/create/${signUpToken}`
 
+    console.log({sessions});
     const data = {
-      createSecret,
-      users: [{...rest, password, sessions: rest.sessions.map(n=>({weekNumber:n}))}]
+      users: [{
+        username,
+        password, 
+        sessions: sessions.map(n=>({weekNumber:n})),
+        ...everythingElse, 
+      }]
     }
     const options = {
       method:"POST",
@@ -66,7 +73,7 @@ const CreateUserPage = () => {
     // if a username is sent back, good to go, log user in
       console.log({responseData});
     if(responseData[0].username){
-      login({username:rest.username,password})  
+      login({username:username,password})  
     }else{
       responseData.forEach(m=>shamefulFailure("SHAME",m.msg))
     }
@@ -81,7 +88,7 @@ const CreateUserPage = () => {
     }
   };
 
-  const handleSessionChange = (e,value) =>{
+  const handleSessionChange = (e) =>{
     const weekNumber = Number.parseInt(e.target.name)
     let sessions = [...formInputs.sessions]
       setFormInputs((f)=>{
@@ -100,7 +107,6 @@ const CreateUserPage = () => {
     confirmPassword: "",
     firstName: "",
     lastName: "",
-    createSecret: "",
     lifeguard: false,
     ropes: false,
     archery: false,
@@ -214,16 +220,6 @@ const CreateUserPage = () => {
                   />
                 ))}
               </FormControl>
-              <TextField
-                size="small"
-                type="createSecret"
-                onChange={handleChange}
-                required
-                name="createSecret"
-                id="secretInput"
-                label="secret code"
-                value={formInputs.createSecret}
-              />
               <Button type="submit" variant="contained" color="primary">
                 <ParkTwoTone />
                 Sign Up

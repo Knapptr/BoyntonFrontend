@@ -3,7 +3,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Divider,
   List,
   ListItem,
   ListItemText,

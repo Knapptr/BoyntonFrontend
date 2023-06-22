@@ -25,8 +25,7 @@ const DailyScheduleAccordion = ({ name, schedule,expanded,onExpand }) => {
       <AccordionDetails>
         <List dense sx={{ bgcolor: "background.secondary", mt: 1 }}>
           {schedule.map((event) => (
-            <>
-              <ListItem>
+              <ListItem key={`schedule-${name}-${event.time}`} divider={true}>
                 <Stack>
                   <ListItemText
                     primary={event.time}
@@ -40,8 +39,6 @@ const DailyScheduleAccordion = ({ name, schedule,expanded,onExpand }) => {
                   />
                 </Stack>
               </ListItem>
-              <Divider />
-            </>
           ))}
         </List>
       </AccordionDetails>

@@ -66,7 +66,7 @@ const DownloadAwardsMenu = ({ handleParentClose,drawerMenu=false }) => {
         onClose={handleClose}
       >
         {weeks.map((week) => (
-          <MenuItem>
+          <MenuItem key={`dl-${week.number}`}>
             <Button
               onClick={() => {
                 handleItemClick(week);

@@ -90,10 +90,12 @@ const CamperAttendant = ({
               )}
             </IconButton>
           </Grid>
-          <Grid item xs={9}>
+    <Grid item xs={3}>
+    {camper.pronouns && <Chip size="small" color="secondary" label={camper.pronouns}/>}
+    </Grid>
+          <Grid item xs={5}>
             <Stack>
               <Typography variant="subtite1" component="p">
-                {" "}
                 {camper.firstName} {camper.lastName}{" "}
               </Typography>
               <Typography variant="caption">

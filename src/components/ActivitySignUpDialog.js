@@ -58,6 +58,8 @@ const ActivitySignUpDialog = ({ open, onClose }) => {
       PaperProps={{ elevation: 8 }}
       open={weeks && open}
       onClose={onClose}
+    fullWidth
+    maxWidth="sm"
     >
       <DialogTitle component="div">
         <Typography variant="subtitle2">Activity Sign Up</Typography>

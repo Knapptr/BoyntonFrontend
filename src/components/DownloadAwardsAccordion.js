@@ -8,15 +8,13 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useContext } from "react";
-import fetchWithToken from "../fetchWithToken";
-import UserContext from "./UserContext";
+import useDownloadLink from "../hooks/useGetDownloadLink";
 import WeekContext from "./WeekContext";
 
 const DownloadAwardsMenu = ({ handleParentClose,drawerMenu=false }) => {
   const { weeks } = useContext(WeekContext);
-  const auth = useContext(UserContext);
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const [ download ] = useDownloadLink();
   const handleMenu = (event) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
@@ -29,14 +27,7 @@ const DownloadAwardsMenu = ({ handleParentClose,drawerMenu=false }) => {
   const handleItemClick = async (week) => {
     handleClose();
     const url = `/api/awards/${week.number}/print`;
-    const results = await fetchWithToken(url, {}, auth);
-    const blob = await results.blob();
-    const downloadBlob = new Blob([blob]);
-    const link = document.createElement("a");
-    const downloadUrl = window.URL.createObjectURL(downloadBlob);
-    link.href = downloadUrl;
-    link.setAttribute("download", `awards-week${week.display}.pptx`);
-    link.click();
+    await download(url,`awards-week${week.display}.pptx`);
   };
 
   return (

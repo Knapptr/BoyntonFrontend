@@ -11,6 +11,7 @@ import {
   Button,
   Card,
   CardContent,
+  CardHeader,
   Container,
   Dialog,
   DialogContent,
@@ -20,6 +21,7 @@ import {
   Fade,
   FormControl,
   Grid,
+  Link,
   MenuItem,
   Paper,
   Stack,
@@ -39,6 +41,7 @@ import useWeeks from "../hooks/useWeeks";
 import { Helmet } from "react-helmet";
 import ActivityInformationDialog from "../components/ActivityDialog";
 import DailySchedules from "../components/Schedule";
+import useDownloadLink from "../hooks/useGetDownloadLink";
 
 const AddScoreDialog = ({ onClose, show, week }) => {
   const TEAMS = ["Naumkeag", "Tahattawan"];
@@ -214,7 +217,6 @@ const ScorePane = () => {
             marginBottom={1}
           >
             <WeekSelection />
-            {/*Clashing MUI and Twin.macro wont allow for a 'Fab' (MUI) here as far as I can tell*/}
             <Fab
               size="small"
               color="success"
@@ -308,6 +310,7 @@ const ScorePane = () => {
 const ProfilePage = () => {
   const auth = useContext(UserContext);
   const [userData, setUserData] = useState(undefined);
+  const [download] = useDownloadLink();
 
   const userBadges = () => {
     if (!userData) {
@@ -397,16 +400,27 @@ const ProfilePage = () => {
               justifyContent="center"
             >
               <Grid item xs={12} sm={12} md={7} lg={8}>
-                <UserSchedule user={userData} sessions={userData.sessions} />
+                <Stack spacing={1}>
+                  <UserSchedule user={userData} sessions={userData.sessions} />
+
+                  <Card>
+                    <CardHeader title="Docs" />
+                    <CardContent>
+          <Link onClick={()=>{
+            download(`/docs/counselor-handbook`, "counselor-handbook2023.pdf")
+          }}>Counselor Handbook</Link>
+          </CardContent>
+                  </Card>
+                </Stack>
               </Grid>
               <Grid item xs={12} sm={12} md={5} lg={4}>
-          <Stack spacing={2}>
-                <ScorePane />
-          <Paper sx={{py:2,px:1}}>
-          <Typography variant="h5">Daily Schedule</Typography>
-                <DailySchedules />
-          </Paper>
-          </Stack>
+                <Stack spacing={2}>
+                  <ScorePane />
+                  <Paper sx={{ py: 2, px: 1 }}>
+                    <Typography variant="h5">Daily Schedule</Typography>
+                    <DailySchedules />
+                  </Paper>
+                </Stack>
               </Grid>
             </Grid>
           </>

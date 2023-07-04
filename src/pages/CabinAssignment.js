@@ -27,7 +27,7 @@ import usePops from "../hooks/usePops";
 
 // CONSTANTS
 const areas = ["ba", "ga"];
-const weeks = ["1", "2", "3", "4", "5", "6"];
+const weeks = ["1", "2", "3", "4", "5", "6", "7"];
 const drawerWidth = 1 / 3;
 const marginSize = 56;
 

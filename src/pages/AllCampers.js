@@ -1,4 +1,4 @@
-import react, { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import {
   Box,
   Table,
@@ -38,7 +38,7 @@ const AllCampers = () => {
     // TODO handle error/no result
     const data = await response.json();
     setCampers(data);
-  }, [weekNumber]);
+  }, [weekNumber,auth]);
 
   //get campers on load
   useEffect(() => {

@@ -89,6 +89,17 @@ const AttendanceDisplay = () => {
     }
   }, [getPeriod]);
 
+  // start timer on page load
+  useEffect(()=>{
+    startTimer()
+    return ()=>{
+    if (intervalRef.current !== null && timeoutRef.current !== null) {
+      clearInterval(intervalRef.current);
+      clearTimeout(timeoutRef.current);
+    };
+  }}, [startTimer])
+
+
 
 
   const openSearchModal = () => {

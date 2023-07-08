@@ -23,6 +23,7 @@ import AttendanceDisplay from "./pages/Attendance";
 import { UserContextProvider } from "./components/UserContext";
 import { WeekContextProvider } from "./components/WeekContext";
 import CreateUserPage from "./pages/CreateUserPage";
+import AllCampers from "./pages/AllCampers";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
               ></Route>
 
               <Route path="award/:weekNumber" element={<Protected><CreateAward /></Protected>} />
+    <Route path ="campers/:weekNumber" element={<Protected><AllCampers/></Protected>}/>
               <Route path="cabins/">
                 {CabinAssignmentRoutes()}{" "}
                 <Route path="list/:weekNumber">

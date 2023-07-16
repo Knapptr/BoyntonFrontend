@@ -35,6 +35,7 @@ const navDialogs = [
   { label: "Cabin Lists", dialog: "cabinlist", reqRole: "counselor" },
   { label: "Give Award", dialog: "giveaward", reqRole: "counselor" },
   { label: "Activity Schedule", dialog: "programming", reqRole: "programming" },
+  {label: "Activity Sign Up", dialog: "signup", reqRole: "counselor"},
   {
     label: "Cabin Assignment",
     dialog: "cabinassignment",

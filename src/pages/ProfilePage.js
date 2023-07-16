@@ -42,6 +42,7 @@ import { Helmet } from "react-helmet";
 import ActivityInformationDialog from "../components/ActivityDialog";
 import DailySchedules from "../components/Schedule";
 import useDownloadLink from "../hooks/useGetDownloadLink";
+import { isProgramming } from "../utils/permissions";
 
 const AddScoreDialog = ({ onClose, show, week }) => {
   const TEAMS = ["Naumkeag", "Tahattawan"];
@@ -404,12 +405,29 @@ const ProfilePage = () => {
                   <UserSchedule user={userData} sessions={userData.sessions} />
 
                   <Card>
-                    <CardHeader title="Docs" />
+                    <CardHeader title="Resources" />
                     <CardContent>
-          <Link onClick={()=>{
-            download(`/docs/counselor-handbook`, "counselor-handbook2023.pdf")
-          }}>Counselor Handbook</Link>
-          </CardContent>
+                      <Stack>
+                            <Link href={`${process.env.REACT_APP_FL_OBS_URL}`}>
+                              FL Observation
+                            </Link>
+          { isProgramming(auth) && <Link
+                              href={`${process.env.REACT_APP_STAFF_OBS_URL}`}
+                            >
+                              Staff Observation
+                            </Link>}
+                            <Link
+                              onClick={() => {
+                                download(
+                                  `/docs/counselor-handbook`,
+                                  "counselor-handbook2023.pdf"
+                                );
+                              }}
+                            >
+                              Counselor Handbook
+                            </Link>
+                      </Stack>
+                    </CardContent>
                   </Card>
                 </Stack>
               </Grid>

@@ -24,6 +24,7 @@ import { isAdmin, isProgramming, isUnitHead } from "../utils/permissions";
 import UserContext from "./UserContext";
 import DownloadAwardsMenu from "./DownloadAwardsAccordion";
 import AllCamperMenu from "./AllCamperMenu";
+import ScheduleMenu from "./ScheduleMenu";
 
 // Consts
 const drawerWidth = 240;
@@ -31,7 +32,6 @@ const drawerWidth = 240;
 // Nav menu items that spawn a dialog box
 const navDialogs = [
   { label: "Attendance", dialog: "attendance", reqRole: "counselor" },
-  { label: "Activity Sign-Up", dialog: "signup", reqRole: "counselor" },
   { label: "Cabin Lists", dialog: "cabinlist", reqRole: "counselor" },
   { label: "Give Award", dialog: "giveaward", reqRole: "counselor" },
   { label: "Activity Schedule", dialog: "programming", reqRole: "programming" },
@@ -46,22 +46,13 @@ const navDialogs = [
 /** App bar items that spawn dialogs*/
 const appBarDialogOptions = [
   { label: "Attendance", dialog: "attendance", reqRole: "counselor" },
-  { label: "Activity Sign-Up", dialog: "signup", reqRole: "counselor" },
   { label: "Cabin Lists", dialog: "cabinlist", reqRole: "counselor" },
   { label: "Give Award", dialog: "giveaward", reqRole: "counselor" },
 ];
 
-/** Schedule Menu that each open dialogs **/
-const scheduleMenuOptions = [
-  {
-    label: "Cabin Assignment",
-    dialog: "cabinassignment",
-    reqRole: "unit_head",
-  },
-  { label: "Activity Schedule", dialog: "programming", reqRole: "programming" },
-  { label: "Staff Scheduling", dialog: "staffing", reqRole: "admin" },
-];
-
+// <MenuItem>
+//   <DownloadAwardsMenu handleParentClose={handleClose} />
+// </MenuItem>
 // Nav items for admin only
 const adminNavItems = [{ label: "Users", url: "/users" }];
 
@@ -86,7 +77,7 @@ const prepareRoleMenuItems = (items, auth) => {
 };
 
 /** Nav menu button that is not a link*/
-const NavMenuButton = ({ children, onClick }) => {
+export const NavMenuButton = ({ children, onClick }) => {
   return (
     <Button sx={{ color: "white" }} onClick={onClick}>
       {children}
@@ -136,7 +127,7 @@ const DrawerDialogs = ({ items, handleDialogs, auth }) => {
 };
 
 /** A Menu that opens on click*/
-const MenuNav = ({ title, items, onClick }) => {
+const MenuNav = ({ title, items, onClick, children }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenu = (event) => {
@@ -170,6 +161,7 @@ const MenuNav = ({ title, items, onClick }) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        {children}
         {items.map((item) => (
           <MenuItem key={`menuItem-${item.label}`}>
             <Button
@@ -182,9 +174,6 @@ const MenuNav = ({ title, items, onClick }) => {
             </Button>
           </MenuItem>
         ))}
-        <MenuItem>
-          <DownloadAwardsMenu handleParentClose={handleClose} />
-        </MenuItem>
       </Menu>
     </>
   );
@@ -217,6 +206,41 @@ function NavDrawer(props) {
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
+  /** Schedule Menu that each open dialogs **/
+  const scheduleMenuOptions = [
+    {
+      label: "Activity Sign Up",
+      reqRole: "counselor",
+      onClick: () => {
+        handleDialogs("signup");
+      },
+    },
+    {
+      label: "Cabin Assignment",
+      reqRole: "unit_head",
+      onClick: () => {
+        handleDialogs("cabinassignment");
+      },
+    },
+    {
+      label: "Programming: Activities",
+      reqRole: "programming",
+      onClick: () => {
+        handleDialogs("programming");
+      },
+    },
+    {
+      label: "Programming: Staff",
+      reqRole: "admin",
+      onClick: () => {
+        handleDialogs("staffing");
+      },
+    },
+  ];
+
+  const scheduleMenuItems = (auth) => [
+    ...prepareRoleMenuItems(scheduleMenuOptions, auth),
+  ];
 
   /** The Drawer itself*/
   const drawer = (
@@ -299,19 +323,21 @@ function NavDrawer(props) {
               />
               <AllCamperMenu />
 
-              {isProgramming(auth) && (
-                <MenuNav
-                  auth={auth}
-                  title="Schedule"
-                  items={prepareRoleMenuItems(scheduleMenuOptions, auth)}
-                  onClick={(item) => {
-                    handleDialogs(item.dialog);
-                  }}
-                />
-              )}
+              <ScheduleMenu
+                auth={auth}
+                title="Schedule"
+                items={scheduleMenuItems(auth)}
+                onClick={(item) => {
+                  item.onClick();
+                }}
+              />
 
               {isAdmin(auth) && (
-                <MenuNav auth={auth} title="Admin" items={adminNavItems} />
+                <MenuNav
+                  auth={auth}
+                  title="Admin"
+                  items={adminNavItems}
+                ></MenuNav>
               )}
               <Button
                 sx={{ marginLeft: "2rem" }}

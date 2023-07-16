@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Routes, BrowserRouter} from "react-router-dom";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
 import CabinAssignmentRoutes from "./pages/CabinAssignment";
 import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/login";
@@ -24,23 +24,24 @@ import { UserContextProvider } from "./components/UserContext";
 import { WeekContextProvider } from "./components/WeekContext";
 import CreateUserPage from "./pages/CreateUserPage";
 import AllCampers from "./pages/AllCampers";
+import AllStaffSchedule from "./pages/AllStaffSchedule";
 
 function App() {
   return (
     <div className="App">
-    <UserContextProvider>
+      <UserContextProvider>
         <BrowserRouter>
           <Routes>
-    <Route path="sign-up/:signUpToken" element = {<CreateUserPage />}/>
+            <Route path="sign-up/:signUpToken" element={<CreateUserPage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="slay" element={<Slay />} />
             <Route
               path=""
               element={
                 <Protected>
-                <WeekContextProvider>
-                  <NavWrapper />
-                </WeekContextProvider>
+                  <WeekContextProvider>
+                    <NavWrapper />
+                  </WeekContextProvider>
                 </Protected>
               }
             >
@@ -52,9 +53,22 @@ function App() {
                   </Protected>
                 }
               ></Route>
-
-              <Route path="award/:weekNumber" element={<Protected><CreateAward /></Protected>} />
-    <Route path ="campers/:weekNumber" element={<Protected><AllCampers/></Protected>}/>
+              <Route
+                path="award/:weekNumber"
+                element={
+                  <Protected>
+                    <CreateAward />
+                  </Protected>
+                }
+              />
+              <Route
+                path="campers/:weekNumber"
+                element={
+                  <Protected>
+                    <AllCampers />
+                  </Protected>
+                }
+              />
               <Route path="cabins/">
                 {CabinAssignmentRoutes()}{" "}
                 <Route path="list/:weekNumber">
@@ -77,7 +91,6 @@ function App() {
                 }
               />
               <Route path="schedule">
-
                 <Route
                   path="programming/:weekNumber"
                   element={
@@ -90,10 +103,17 @@ function App() {
                 <Route path="sign-up" element={<SignUpIndex />}>
                   <Route
                     path=":cabin/:weekNumber"
-                    element={<Protected><CreateSchedulePage /></Protected>}
+                    element={
+                      <Protected>
+                        <CreateSchedulePage />
+                      </Protected>
+                    }
                   />
                 </Route>
-
+                <Route
+                  path="staff/:weekNumber"
+                  element={<AllStaffSchedule />}
+                />
 
                 <Route
                   path="staffing/:weekNumber"
@@ -106,7 +126,11 @@ function App() {
 
                 <Route
                   path="attendance/:periodId"
-                  element={<Protected><AttendanceDisplay /></Protected>}
+                  element={
+                    <Protected>
+                      <AttendanceDisplay />
+                    </Protected>
+                  }
                 />
               </Route>
             </Route>

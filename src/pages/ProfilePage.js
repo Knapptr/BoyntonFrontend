@@ -409,6 +409,9 @@ const ProfilePage = () => {
                             <Link href={`${process.env.REACT_APP_FL_OBS_URL}`}>
                               FL Observation
                             </Link>
+                            <Link href={`${process.env.REACT_APP_FL_CABIN_OBS_URL}`}>
+          Cabin Counselor FL Eval
+                            </Link>
           { isProgramming(auth) && <Link
                               href={`${process.env.REACT_APP_STAFF_OBS_URL}`}
                             >

@@ -402,8 +402,6 @@ const ProfilePage = () => {
             >
               <Grid item xs={12} sm={12} md={7} lg={8}>
                 <Stack spacing={1}>
-                  <UserSchedule user={userData} sessions={userData.sessions} />
-
                   <Card>
                     <CardHeader title="Resources" />
                     <CardContent>
@@ -429,6 +427,8 @@ const ProfilePage = () => {
                       </Stack>
                     </CardContent>
                   </Card>
+                  <UserSchedule user={userData} sessions={userData.sessions} />
+
                 </Stack>
               </Grid>
               <Grid item xs={12} sm={12} md={5} lg={4}>

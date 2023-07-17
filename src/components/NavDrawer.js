@@ -25,6 +25,7 @@ import UserContext from "./UserContext";
 import DownloadAwardsMenu from "./DownloadAwardsAccordion";
 import AllCamperMenu from "./AllCamperMenu";
 import ScheduleMenu from "./ScheduleMenu";
+import StaffScheduleMenu from "./StaffScheduleMenu";
 
 // Consts
 const drawerWidth = 240;
@@ -252,6 +253,7 @@ function NavDrawer(props) {
         items={navDialogs}
       />
       <AllCamperMenu drawerMenu />
+    <StaffScheduleMenu drawerMenu />
 
       <Divider />
 

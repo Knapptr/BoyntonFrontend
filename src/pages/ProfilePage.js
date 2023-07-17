@@ -42,7 +42,7 @@ import { Helmet } from "react-helmet";
 import ActivityInformationDialog from "../components/ActivityDialog";
 import DailySchedules from "../components/Schedule";
 import useDownloadLink from "../hooks/useGetDownloadLink";
-import { isProgramming } from "../utils/permissions";
+import { isProgramming, isUnitHead } from "../utils/permissions";
 
 const AddScoreDialog = ({ onClose, show, week }) => {
   const TEAMS = ["Naumkeag", "Tahattawan"];
@@ -412,6 +412,9 @@ const ProfilePage = () => {
                             <Link href={`${process.env.REACT_APP_FL_CABIN_OBS_URL}`}>
           Cabin Counselor FL Eval
                             </Link>
+          { isUnitHead(auth) && <Link 
+            href={process.env.REACT_APP_OBSERVATION_RESPONSES_URL}
+          >Staff Observation Responses</Link>}
           { isProgramming(auth) && <Link
                               href={`${process.env.REACT_APP_STAFF_OBS_URL}`}
                             >

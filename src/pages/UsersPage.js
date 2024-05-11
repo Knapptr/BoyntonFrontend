@@ -116,6 +116,7 @@ const EditUserBox = ({
                   type="password"
                   value={edits.password}
                   onChange={handleChange}
+              error={edits.password.length < 6}
                 />
               </Box>
             )}

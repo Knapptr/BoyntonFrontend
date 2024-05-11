@@ -53,12 +53,12 @@ const CreateSchedulePage = () => {
     // check if is currently Selected
     if (
       selectedCampers.some(
-        (c) => c.camper.camperSessionId === camper.camperSessionId
+        (c) => c.camper.sessionId === camper.sessionId
       )
     ) {
       setSelectedCampers((sc) =>
         sc.filter(
-          (slc) => slc.camper.camperSessionId !== camper.camperSessionId
+          (slc) => slc.camper.sessionId !== camper.sessionId
         )
       );
       return;

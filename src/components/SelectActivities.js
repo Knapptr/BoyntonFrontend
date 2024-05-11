@@ -65,7 +65,7 @@ const SelectActivities = ({
         newState[selectedCamper.sourceId].campers = newState[
           selectedCamper.sourceId
         ].campers.filter(
-          (c) => c.camperSessionId !== selectedCamper.camper.camperSessionId
+          (c) => c.sessionId !== selectedCamper.camper.sessionId
         );
         // Add camper to destination
         newState[activitySessionId].campers.push(selectedCamper.camper);
@@ -127,7 +127,7 @@ const SelectActivities = ({
                       .sort((a, b) => a.lastName.localeCompare(b.lastName))
                       .map((camper, index) => (
                         <Chip
-                          key={`camper-unassigned-${camper.camperSessionId}`}
+                          key={`camper-unassigned-${camper.sessionId}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleSelectCamper(camper, "unassigned");
@@ -135,8 +135,8 @@ const SelectActivities = ({
                           color={
                             selectedCampers.some(
                               (sc) =>
-                                sc.camper.camperSessionId ===
-                                camper.camperSessionId
+                                sc.camper.sessionId ===
+                                camper.sessionId
                             )
                               ? "primary"
                               : "default"
@@ -198,10 +198,11 @@ const SelectActivities = ({
                           {[...activityLists[aid].campers]
                             .sort((a, b) =>
                               a.lastName.localeCompare(b.lastName)
-                            )
+                            ).filter(c=>c.cabin ===cabinName)
+                              //only show current cabin
                             .map((camper) => (
                               <Chip
-                                key={`activity-${aid}-${camper.camperSessionId}`}
+                                key={`activity-${aid}-${camper.sessionId}`}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleSelectCamper(camper, aid);
@@ -209,8 +210,8 @@ const SelectActivities = ({
                                 color={
                                   selectedCampers.some(
                                     (sc) =>
-                                      sc.camper.camperSessionId ===
-                                      camper.camperSessionId
+                                      sc.camper.sessionId ===
+                                      camper.sessionId
                                   )
                                     ? "primary"
                                     : "default"

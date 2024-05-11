@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../components/UserContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import fetchWithToken from "../fetchWithToken";
 import sortCabins from "../sortCabins";
 import {
@@ -36,6 +36,7 @@ const cabinSelections = {
 };
 
 const CabinListItem = ({ cabin }) => {
+  const navigate = useNavigate();
   return (
     <>
       <Box
@@ -55,6 +56,7 @@ const CabinListItem = ({ cabin }) => {
             cabin.campers.map((camper, index) => (
               <CamperItem
                 key={`cabin-camper-${camper.id}`}
+              handleSelect={()=>navigate(`/camper/${camper.camperId}`)}
                 index={index}
                 camper={camper}
               />

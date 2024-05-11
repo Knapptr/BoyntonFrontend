@@ -25,6 +25,8 @@ import { WeekContextProvider } from "./components/WeekContext";
 import CreateUserPage from "./pages/CreateUserPage";
 import AllCampers from "./pages/AllCampers";
 import AllStaffSchedule from "./pages/AllStaffSchedule";
+import OneCamper from "./pages/OneCamper";
+import ActivityInfo from "./pages/Activity";
 
 function App() {
   return (
@@ -58,6 +60,14 @@ function App() {
                 element={
                   <Protected>
                     <CreateAward />
+                  </Protected>
+                }
+              />
+              <Route
+                path="camper/:camperId"
+                element={
+                  <Protected>
+                    <OneCamper />
                   </Protected>
                 }
               />
@@ -121,6 +131,14 @@ function App() {
                     <RoleProtected role="unit_head">
                       <StaffSchedule />
                     </RoleProtected>
+                  }
+                />
+                <Route
+                  path="activity/:activityId"
+                  element={
+                    <Protected>
+                      <ActivityInfo />
+                    </Protected>
                   }
                 />
 

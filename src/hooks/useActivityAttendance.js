@@ -20,8 +20,10 @@ const useActivityAttendance = (period, cabin) => {
 		activities.forEach((act) => {
 			listing.activityIds.push(act.id);
 			listing[act.id] = {
+				id: act.id,
 				name: act.activityName,
 				description: act.description,
+				capacity: act.capacity,
 				campers: act.campers
 			};
 		});

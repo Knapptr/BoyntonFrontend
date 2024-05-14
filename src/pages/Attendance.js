@@ -35,7 +35,7 @@ const AttendanceDisplay = () => {
     const {signal} = abortControllerRef.current;
     const url = `/api/periods/${periodId}`;
     const data = await fetchWithToken(url, {signal}, auth);
-    console.log({data});
+    // console.log({data});
     if(data.ok){
     const periodJson = await data.json();
     setPeriod(periodJson);

@@ -9,10 +9,15 @@ import {
   Chip,
   Container,
   IconButton,
+  Button,
 } from "@mui/material";
+import {purple} from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import RemoveCircleFilledIcon from "@mui/icons-material/RemoveCircleOutlined";
 import RemoveCircleEmptyIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
+import { Link } from "react-router-dom";
+
+const purp = purple[800];
 
 const AttendantWrapper = styled(Box)(
   ({ theme, children, selected, checked, index }) => ({
@@ -94,14 +99,16 @@ const CamperAttendant = ({
     {camper.pronouns && <Chip size="small" color="secondary" label={camper.pronouns}/>}
     </Grid>
           <Grid item xs={5}>
-            <Stack>
+    <Button  component={Link} to={`/camper/${camper.id}`}>
+            <Stack color={purp}>
               <Typography variant="subtite1" component="p">
                 {camper.firstName} {camper.lastName}{" "}
               </Typography>
               <Typography variant="caption">
-                Cabin {camper.cabinName}
+                Cabin {camper.cabin}
               </Typography>
             </Stack>
+    </Button>
           </Grid>
           <Grid item xs={2}>
             <IconButton size="large" onClick={assignHere}>
@@ -150,6 +157,8 @@ const ActivityAttendance = ({
                 alignItems="baseline"
                 justifyContent="space-between"
                 pr={4}
+    component={Link}
+    to={`/schedule/activity/${activity.sessionId}`}
               >
                 <Typography variant="h6">{activity.name}</Typography>
                 <Typography variant="subtitle1">

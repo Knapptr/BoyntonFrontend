@@ -27,6 +27,7 @@ import AllCampers from "./pages/AllCampers";
 import AllStaffSchedule from "./pages/AllStaffSchedule";
 import OneCamper from "./pages/OneCamper";
 import ActivityInfo from "./pages/Activity";
+import { RegistrationPage, RegistrationIndex } from "./pages/Registration";
 
 function App() {
   return (
@@ -55,6 +56,24 @@ function App() {
                   </Protected>
                 }
               ></Route>
+              <Route path="registration">
+                <Route
+                  path=""
+                  element={
+                    <Protected>
+                      <RegistrationIndex />
+                    </Protected>
+                  }
+                />
+                <Route
+                  path=":weekId"
+                  element={
+                    <Protected>
+                      <RegistrationPage />
+                    </Protected>
+                  }
+                />
+              </Route>
               <Route
                 path="award/:weekNumber"
                 element={

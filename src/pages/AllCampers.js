@@ -71,7 +71,7 @@ const AllCampers = () => {
             </TableHead>
             <TableBody>
               {campers.map((c) => (
-                <StyledTableRow onClick={()=>navigate(`/camper/${c.camperId}`)}>
+                <StyledTableRow onClick={()=>navigate(`/camper/${c.id}`)}>
                   <TableCell>{c.lastName}</TableCell>
                   <TableCell>{c.firstName}</TableCell>
                   <TableCell>{c.age}</TableCell>

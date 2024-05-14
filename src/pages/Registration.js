@@ -215,7 +215,7 @@ export const RegistrationPage = () => {
         selected={selected}
         campers={campers.list}
       />
-      <h1>Week {weekId}</h1>
+      <h1>Week {weekId - 1}</h1>
       {selected && (
         <CamperDetails
           camperId={selected.id}

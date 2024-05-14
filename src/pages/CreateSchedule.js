@@ -136,7 +136,7 @@ const CreateSchedulePage = () => {
           Cabin {`${toTitleCase(cabin)}`}
         </Typography>
         <Typography color="secondary" variant="subtitle1">
-          Week {weekNumber}
+          Week {week.display}
         </Typography>
       </Stack>
       <Stack direction="row" justifyContent="center" spacing={2}>

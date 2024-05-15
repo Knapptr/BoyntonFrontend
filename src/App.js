@@ -28,6 +28,7 @@ import AllStaffSchedule from "./pages/AllStaffSchedule";
 import OneCamper from "./pages/OneCamper";
 import ActivityInfo from "./pages/Activity";
 import { RegistrationPage, RegistrationIndex } from "./pages/Registration";
+import UserAdminPage from "./pages/UserAdminPage";
 
 function App() {
   return (
@@ -111,6 +112,22 @@ function App() {
                   ></Route>
                 </Route>
               </Route>
+              <Route
+                path="admin/users"
+                element={
+                  <RoleProtected role="admin">
+                    <UserAdminPage />
+                  </RoleProtected>
+                }
+              />
+              <Route
+                path="admin/users/:username"
+                element={
+                  <RoleProtected role="admin">
+                    <UserAdminPage />
+                  </RoleProtected>
+                }
+              />
               <Route
                 path="users"
                 element={

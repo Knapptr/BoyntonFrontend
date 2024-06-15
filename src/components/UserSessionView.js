@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useCallback, useContext, useEffect, useState } from "react";
 import fetchWithToken from "../fetchWithToken";
+import CabinAssignmentDropdown from "./CabinDropdown";
 import UserContext from "./UserContext";
 
 // helper function to get period numbers
@@ -29,7 +30,7 @@ const getPeriodNumbersFromSchedule = (schedule) => {
   }
   return periodRange;
 };
-const UserSessionView = ({ session }) => {
+const UserSessionView = ({ session,assignCabin }) => {
   // Define contexts
   const auth = useContext(UserContext);
   // Define states
@@ -93,13 +94,32 @@ const UserSessionView = ({ session }) => {
     const rawResponse = await response.json();
     setScheduleData(rawResponse.schedule);
   }, [auth, session.id]);
+
   useEffect(() => {
     loadUserData();
   }, [loadUserData]);
 
   return (
     session !== null && (
-      <Grid container>
+      <Grid container my={2}>
+        <Grid item xs={12}>
+          <CabinAssignmentDropdown
+            weekNumber={session.weekNumber}
+            currentAssignment={session.cabinSessionId}
+            onSelect={async(e) => {
+              const assignmentId = e.target.value;
+              const url=`/api/staff-sessions/${session.id}/cabin`;
+              const options = {
+                method: "POST",
+                headers: {"content-type":"application/json"},
+                body: JSON.stringify({cabinId:assignmentId})
+              }
+              await fetchWithToken(url,options,auth);
+              loadUserData();
+              assignCabin(assignmentId);
+            }}
+          />
+        </Grid>
         <Grid item xs={2}>
           <Typography>Toggle all</Typography>
           <Stack gap={1}>

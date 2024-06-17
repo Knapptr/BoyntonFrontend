@@ -27,7 +27,12 @@ import {
   TableBody,
 } from "@mui/material";
 import useWeeks from "../hooks/useWeeks";
-import { AddCircle, DeleteSharp, Edit } from "@mui/icons-material";
+import {
+  AddCircle,
+  CalendarMonth,
+  DeleteSharp,
+  Edit,
+} from "@mui/icons-material";
 import SignUpLinkButton from "../components/SignUpLinkButton";
 import SignUpLinkDialog from "../components/SignUpLinkDialog";
 
@@ -98,11 +103,18 @@ const EditUserBox = ({
               />
             </Stack>
             <Box width={5 / 8}>
-              <FormControl fullWidth >
+              <FormControl fullWidth>
                 <InputLabel>Role</InputLabel>
-                <Select onChange={handleChange}label="Role" name="role" value={edits.role}>
+                <Select
+                  onChange={handleChange}
+                  label="Role"
+                  name="role"
+                  value={edits.role}
+                >
                   {ROLES.map((role) => (
-                    <MenuItem key={`role-${role}`}value={role}>{role}</MenuItem>
+                    <MenuItem key={`role-${role}`} value={role}>
+                      {role}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -116,7 +128,7 @@ const EditUserBox = ({
                   type="password"
                   value={edits.password}
                   onChange={handleChange}
-              error={edits.password.length < 6}
+                  error={edits.password.length < 6}
                 />
               </Box>
             )}
@@ -203,16 +215,16 @@ const UsersPage = () => {
   const auth = useContext(UserContext);
 
   const [users, setUsers] = useState([]);
-  
-  const [signUpLink,setSignUpLink] = useState(null);
 
-  const handleSignUpToken = (token)=>{
-    const url = `${process.env.REACT_APP_ROOT_URL}/sign-up/${token}`
+  const [signUpLink, setSignUpLink] = useState(null);
+
+  const handleSignUpToken = (token) => {
+    const url = `${process.env.REACT_APP_ROOT_URL}/sign-up/${token}`;
     setSignUpLink(url);
-  }
-  const handleLinkClose = ()=>{
+  };
+  const handleLinkClose = () => {
     setSignUpLink(null);
-  }
+  };
 
   const [edit, setEdit] = useState({
     type: editTypes.NONE,
@@ -362,7 +374,11 @@ const UsersPage = () => {
 
   return (
     <>
-    <SignUpLinkDialog open={signUpLink !== null} onClose={handleLinkClose} url={signUpLink} />
+      <SignUpLinkDialog
+        open={signUpLink !== null}
+        onClose={handleLinkClose}
+        url={signUpLink}
+      />
       <h1>Users</h1>
       {weeks && (
         <>
@@ -417,6 +433,20 @@ const UsersPage = () => {
           </Dialog>
         </>
       )}
+    <Stack my={1} width={1} direction="row" gap={2} justifyContent="end">
+      <SignUpLinkButton
+        buttonProps={{ color: "warning", variant: "contained" }}
+        onGetToken={handleSignUpToken}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={toggleCreateNew}
+        endIcon={<AddCircle />}
+      >
+        Create
+      </Button>
+    </Stack>
       <TableContainer component={Paper}>
         <Table size="small">
           <TableHead>
@@ -434,17 +464,13 @@ const UsersPage = () => {
                 <Typography color="white">Role</Typography>
               </TableCell>
               <TableCell>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={toggleCreateNew}
-                  endIcon={<AddCircle />}
-                >
-                  Create New User
-                </Button>
+                <Typography color="white">Schedule</Typography>
               </TableCell>
               <TableCell>
-    <SignUpLinkButton buttonProps={{color:"warning",variant:"contained"}} onGetToken={handleSignUpToken}/>
+                <Typography color="white">Edit</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography color="white">Delete</Typography>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -462,6 +488,14 @@ const UsersPage = () => {
                 <TableCell>{u.firstName}</TableCell>
                 <TableCell>{u.lastName}</TableCell>
                 <TableCell>{u.role}</TableCell>
+                <TableCell>
+                  <IconButton
+                    color="secondary"
+                    href={`/admin/users/${u.username}`}
+                  >
+                    <CalendarMonth />
+                  </IconButton>
+                </TableCell>
                 <TableCell>
                   <IconButton
                     color="secondary"

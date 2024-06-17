@@ -20,8 +20,7 @@ const AppBarMenu = ({ name, items, handleDialogs, auth }) => {
       case "link":
         return (
           <MenuItem key={`menuItem-${item.label}`}>
-            <Button href={item.href} onClick={handleClose}>
-              {" "}
+            <Button startIcon={item.icon && item.icon} href={item.href} onClick={handleClose}>
               {item.label}{" "}
             </Button>
           </MenuItem>
@@ -30,6 +29,7 @@ const AppBarMenu = ({ name, items, handleDialogs, auth }) => {
         return (
           <MenuItem key={`menuItem-${item.label}`}>
             <Button
+          startIcon={item.icon && item.icon}
               onClick={() => {
                 handleDialogs(item.dialog);
                 handleClose();
@@ -44,6 +44,7 @@ const AppBarMenu = ({ name, items, handleDialogs, auth }) => {
         return (
           <MenuItem key={`menuItem-${item.label}`}>
             <Button
+          startIcon={item.icon && item.icon}
               onClick={() => {
                 download(item.href, item.filename);
                 handleClose();

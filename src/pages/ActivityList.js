@@ -65,7 +65,7 @@ const ActivityList = () => {
     loadActivities();
   }, [loadActivities]);
   return (
-    <Box>
+    <Box maxWidth={1}>
       <EditActivityDialog
         open={editDialogOpen}
         onClose={closeEditDialog}

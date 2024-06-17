@@ -404,31 +404,6 @@ const ProfilePage = () => {
                 <Stack spacing={1}>
                   <UserSchedule user={userData} sessions={userData.sessions} />
 
-                  <Card>
-                    <CardHeader title="Resources" />
-                    <CardContent>
-                      <Stack>
-                            <Link href={`${process.env.REACT_APP_FL_OBS_URL}`}>
-                              FL Observation
-                            </Link>
-          { isProgramming(auth) && <Link
-                              href={`${process.env.REACT_APP_STAFF_OBS_URL}`}
-                            >
-                              Staff Observation
-                            </Link>}
-                            <Link
-                              onClick={() => {
-                                download(
-                                  `/docs/counselor-handbook`,
-                                  "counselor-handbook2023.pdf"
-                                );
-                              }}
-                            >
-                              Counselor Handbook
-                            </Link>
-                      </Stack>
-                    </CardContent>
-                  </Card>
                 </Stack>
               </Grid>
               <Grid item xs={12} sm={12} md={5} lg={4}>

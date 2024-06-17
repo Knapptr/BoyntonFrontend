@@ -29,6 +29,7 @@ import OneCamper from "./pages/OneCamper";
 import ActivityInfo from "./pages/Activity";
 import { RegistrationPage, RegistrationIndex } from "./pages/Registration";
 import UserAdminPage from "./pages/UserAdminPage";
+import ActivityList from "./pages/ActivityList";
 
 function App() {
   return (
@@ -137,6 +138,14 @@ function App() {
                 }
               />
               <Route path="schedule">
+                <Route
+                  path="programming/activities"
+                  element={
+                    <RoleProtected role="programming">
+                      <ActivityList />
+                    </RoleProtected>
+                  }
+                />
                 <Route
                   path="programming/:weekNumber"
                   element={

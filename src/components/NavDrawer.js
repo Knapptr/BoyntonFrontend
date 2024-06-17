@@ -18,10 +18,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import IconButton from "@mui/material/IconButton";
 import { isAdmin, isProgramming, isUnitHead } from "../utils/permissions";
 import UserContext from "./UserContext";
-import AllCamperMenu from "./AllCamperMenu";
 import { ExpandMore } from "@mui/icons-material";
-import useDownloadLink from "../hooks/useGetDownloadLink";
-import prepareRoleMenuItems from "../utils/filterRoles";
 
 // THIS IS THE SOURCE OF THE MENU ITEM CONFIG
 import menus from "../config/menus"; //
@@ -91,7 +88,6 @@ function NavDrawer(props) {
       }}
     >
       <Box onClick={handleDrawerToggle}>
-        <AllCamperMenu drawerMenu />
         <Divider />
         {createAccordionMenu("Schedule", menus.schedule, handleDialogs, auth)}
         {createAccordionMenu("Campers", menus.campers, handleDialogs, auth)}

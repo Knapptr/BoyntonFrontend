@@ -34,9 +34,6 @@ const PrintAwardsDialog = ({ open, onClose }) => {
     handleClose();
   };
 
-  const getUrl = () => {
-    return `/registration/${selectedWeek()?.number}`;
-  };
 
   return (
     <Dialog

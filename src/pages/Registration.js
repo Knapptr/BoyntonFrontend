@@ -1,8 +1,5 @@
 import {
-  AddCircle,
   CabinRounded,
-  CreateRounded,
-  Expand,
   ExpandMore,
   School,
   WbSunny,
@@ -11,17 +8,12 @@ import {
   Box,
   Stack,
   Autocomplete,
-  Card,
-  CardActions,
-  CardContent,
   Chip,
-  IconButton,
   TextField,
   Typography,
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  ClickAwayListener,
 } from "@mui/material";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -89,12 +81,12 @@ const CamperDetails = ({ camperId, weekId }) => {
           fl: currentWeekInfo.fl,
           schedule: currentWeekInfo.schedule,
         },
-        otherSessions: camperInfo.weeks.filter((s) => s.weekNumber != weekId),
+        otherSessions: camperInfo.weeks.filter((s) => s.weekNumber !== weekId),
       };
 
       setData(camper);
     }
-  }, [camperId]);
+  }, [camperId,auth,weekId]);
   useEffect(() => {
     loadData();
   }, [loadData]);
@@ -207,7 +199,7 @@ export const RegistrationPage = () => {
       }
     };
     getData();
-  }, []);
+  }, [auth,weekId]);
   return (
     <Box py={1}>
       <CamperSearchBar

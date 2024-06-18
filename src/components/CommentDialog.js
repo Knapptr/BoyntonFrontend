@@ -1,4 +1,4 @@
-import { Button, ClickAwayListener, Dialog, DialogContent, DialogTitle, Stack, TextField } from "@mui/material";
+import { Button, Dialog, DialogContent, DialogTitle, Stack, TextField } from "@mui/material";
 import { useContext, useState } from "react";
 import fetchWithToken from "../fetchWithToken";
 import usePops from "../hooks/usePops";

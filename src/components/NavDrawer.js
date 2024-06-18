@@ -16,7 +16,7 @@ import { Box } from "@mui/system";
 import { useContext, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import IconButton from "@mui/material/IconButton";
-import { isAdmin, isProgramming, isUnitHead } from "../utils/permissions";
+import { isAdmin} from "../utils/permissions";
 import UserContext from "./UserContext";
 import { ExpandMore } from "@mui/icons-material";
 

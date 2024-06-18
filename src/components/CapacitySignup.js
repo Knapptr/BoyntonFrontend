@@ -69,7 +69,7 @@ const CapacitySignUp = ({
       setCapacityActs(capacityActsOnly);
     };
     getData();
-  }, []);
+  }, [auth,weekId]);
 
   const renderOptions = (camperSchedule) => {
     const allCamperActs = getAllEnrolledActivities(camperSchedule);

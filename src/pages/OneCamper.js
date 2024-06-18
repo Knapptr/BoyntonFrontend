@@ -1,4 +1,3 @@
-import AddIcon from "@mui/icons-material/Add";
 import {
   Box,
   Card,
@@ -8,21 +7,12 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Container,
   Divider,
   CardHeader,
   CardContent,
   List,
   ListItem,
   ListItemText,
-  Button,
-  IconButton,
-  Modal,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
 } from "@mui/material";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -30,7 +20,6 @@ import CommentBox from "../components/CommentBox";
 import CommentDialog from "../components/CommentDialog";
 import UserContext from "../components/UserContext";
 import fetchWithToken from "../fetchWithToken";
-import usePops from "../hooks/usePops";
 
 const CamperInfoBox = ({ camper }) => {
   return (
@@ -46,7 +35,7 @@ const CamperInfoBox = ({ camper }) => {
           <TableHead>
             <TableCell>Area</TableCell>
           </TableHead>
-          <TableCell>{camper.gender == "Male" ? "BA" : "GA"}</TableCell>
+          <TableCell>{camper.gender === "Male" ? "BA" : "GA"}</TableCell>
         </TableRow>
         <TableRow>
           <TableHead>
@@ -75,7 +64,7 @@ const WeeksBox = ({ camper }) => {
             <TableCell>{w.number}</TableCell>
             <TableCell>{w.title}</TableCell>
             <TableCell>{w.cabinName || "unassigned"}</TableCell>
-          <TableCell>{w.fl && "FL" || w.day && "Day"}</TableCell>
+          <TableCell>{(w.fl && "FL") ||( w.day && "Day")}</TableCell>
           </TableRow>
         ))}
       </Table>
@@ -105,7 +94,7 @@ const OneCamper = () => {
       const data = await response.json();
       setCamper(data);
     }
-  }, [camperId]);
+  }, [camperId,auth]);
   // get camper on load
   useEffect(() => {
     loadData();

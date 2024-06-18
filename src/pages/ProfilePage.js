@@ -11,7 +11,6 @@ import {
   Button,
   Card,
   CardContent,
-  CardHeader,
   Container,
   Dialog,
   DialogContent,
@@ -21,7 +20,6 @@ import {
   Fade,
   FormControl,
   Grid,
-  Link,
   MenuItem,
   Paper,
   Stack,
@@ -41,8 +39,6 @@ import useWeeks from "../hooks/useWeeks";
 import { Helmet } from "react-helmet";
 import ActivityInformationDialog from "../components/ActivityDialog";
 import DailySchedules from "../components/Schedule";
-import useDownloadLink from "../hooks/useGetDownloadLink";
-import { isProgramming, isUnitHead } from "../utils/permissions";
 
 const AddScoreDialog = ({ onClose, show, week }) => {
   const TEAMS = ["Naumkeag", "Tahattawan"];
@@ -311,7 +307,6 @@ const ScorePane = () => {
 const ProfilePage = () => {
   const auth = useContext(UserContext);
   const [userData, setUserData] = useState(undefined);
-  const [download] = useDownloadLink();
 
   const userBadges = () => {
     if (!userData) {

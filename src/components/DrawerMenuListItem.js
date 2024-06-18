@@ -35,6 +35,7 @@ const DrawerMenu = ({ items, handleDialogs, auth }) => {
             <ListItemText primary={item.label} />
           </ListItemButton>
         );
+      default: return;
     }
   };
   return authBasedItems.map((item) => {

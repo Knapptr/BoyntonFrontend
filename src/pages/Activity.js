@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   CardContent,
-  CardHeader,
   Divider,
   List,
   ListItem,
@@ -37,10 +36,10 @@ const ActivityInfo = () => {
       }
     };
     getActivity(activityId);
-  }, []);
+  }, [auth,activityId]);
 
   return (
-    (error && <h1>{error}</h1> || !activity && <h1>Loading</h1>) ||
+    ((error && <h1>{error}</h1>) || (!activity && <h1>Loading</h1>)) ||
     (
       <Box>
         <Card>

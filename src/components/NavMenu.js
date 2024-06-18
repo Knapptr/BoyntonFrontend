@@ -55,6 +55,7 @@ const AppBarMenu = ({ name, items, handleDialogs, auth }) => {
             </Button>
           </MenuItem>
         );
+      default: return;
     }
   };
   return (

@@ -17,7 +17,7 @@ import RemoveCircleFilledIcon from "@mui/icons-material/RemoveCircleOutlined";
 import RemoveCircleEmptyIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
 import { Link } from "react-router-dom";
 
-const purp = purple[800];
+const purp = purple[900];
 
 const AttendantWrapper = styled(Box)(
   ({ theme, children, selected, checked, index }) => ({
@@ -204,7 +204,7 @@ const ActivityAttendance = ({
                 .map((camper, camperIndex) => (
                   <CamperAttendant
                     camperSelection={camperSelection}
-                    key={`camper-${activity.name}-${camper.sessionId}`}
+                    key={`camper-${activity.name}-${camper.weekId}`}
                     toggleIsPresent={toggleHere}
                     camperIndex={camperIndex}
                     camper={camper}

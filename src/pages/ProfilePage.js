@@ -402,37 +402,6 @@ const ProfilePage = () => {
             >
               <Grid item xs={12} sm={12} md={7} lg={8}>
                 <Stack spacing={1}>
-                  <Card>
-                    <CardHeader title="Resources" />
-                    <CardContent>
-                      <Stack>
-                            <Link href={`${process.env.REACT_APP_FL_OBS_URL}`}>
-                              FL Observation
-                            </Link>
-                            <Link href={`${process.env.REACT_APP_FL_CABIN_OBS_URL}`}>
-          Cabin Counselor FL Eval
-                            </Link>
-          { isUnitHead(auth) && <Link 
-            href={process.env.REACT_APP_OBSERVATION_RESPONSES_URL}
-          >Staff Observation Responses</Link>}
-          { isProgramming(auth) && <Link
-                              href={`${process.env.REACT_APP_STAFF_OBS_URL}`}
-                            >
-                              Staff Observation
-                            </Link>}
-                            <Link
-                              onClick={() => {
-                                download(
-                                  `/docs/counselor-handbook`,
-                                  "counselor-handbook2023.pdf"
-                                );
-                              }}
-                            >
-                              Counselor Handbook
-                            </Link>
-                      </Stack>
-                    </CardContent>
-                  </Card>
                   <UserSchedule user={userData} sessions={userData.sessions} />
 
                 </Stack>

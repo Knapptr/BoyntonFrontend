@@ -25,6 +25,11 @@ import { WeekContextProvider } from "./components/WeekContext";
 import CreateUserPage from "./pages/CreateUserPage";
 import AllCampers from "./pages/AllCampers";
 import AllStaffSchedule from "./pages/AllStaffSchedule";
+import OneCamper from "./pages/OneCamper";
+import ActivityInfo from "./pages/Activity";
+import { RegistrationPage, RegistrationIndex } from "./pages/Registration";
+import UserAdminPage from "./pages/UserAdminPage";
+import ActivityList from "./pages/ActivityList";
 
 function App() {
   return (
@@ -53,11 +58,37 @@ function App() {
                   </Protected>
                 }
               ></Route>
+              <Route path="registration">
+                <Route
+                  path=""
+                  element={
+                    <Protected>
+                      <RegistrationIndex />
+                    </Protected>
+                  }
+                />
+                <Route
+                  path=":weekId"
+                  element={
+                    <Protected>
+                      <RegistrationPage />
+                    </Protected>
+                  }
+                />
+              </Route>
               <Route
                 path="award/:weekNumber"
                 element={
                   <Protected>
                     <CreateAward />
+                  </Protected>
+                }
+              />
+              <Route
+                path="camper/:camperId"
+                element={
+                  <Protected>
+                    <OneCamper />
                   </Protected>
                 }
               />
@@ -83,6 +114,22 @@ function App() {
                 </Route>
               </Route>
               <Route
+                path="admin/users"
+                element={
+                  <RoleProtected role="admin">
+                    <UserAdminPage />
+                  </RoleProtected>
+                }
+              />
+              <Route
+                path="admin/users/:username"
+                element={
+                  <RoleProtected role="admin">
+                    <UserAdminPage />
+                  </RoleProtected>
+                }
+              />
+              <Route
                 path="users"
                 element={
                   <RoleProtected role="admin">
@@ -91,6 +138,14 @@ function App() {
                 }
               />
               <Route path="schedule">
+                <Route
+                  path="programming/activities"
+                  element={
+                    <RoleProtected role="programming">
+                      <ActivityList />
+                    </RoleProtected>
+                  }
+                />
                 <Route
                   path="programming/:weekNumber"
                   element={
@@ -121,6 +176,14 @@ function App() {
                     <RoleProtected role="unit_head">
                       <StaffSchedule />
                     </RoleProtected>
+                  }
+                />
+                <Route
+                  path="activity/:activityId"
+                  element={
+                    <Protected>
+                      <ActivityInfo />
+                    </Protected>
                   }
                 />
 

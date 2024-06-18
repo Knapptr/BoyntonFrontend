@@ -4,17 +4,13 @@ import {
   Divider,
   Drawer,
   List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
   Toolbar,
-  Typography,
   Button,
-  Menu,
-  MenuItem,
   Stack,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-// import { useLocation } from "react-router-dom";
 import ParkTwoToneIcon from "@mui/icons-material/ParkTwoTone";
 import { Box } from "@mui/system";
 import { useContext, useState } from "react";
@@ -22,60 +18,33 @@ import MenuIcon from "@mui/icons-material/Menu";
 import IconButton from "@mui/material/IconButton";
 import { isAdmin, isProgramming, isUnitHead } from "../utils/permissions";
 import UserContext from "./UserContext";
-import DownloadAwardsMenu from "./DownloadAwardsAccordion";
-import AllCamperMenu from "./AllCamperMenu";
-import ScheduleMenu from "./ScheduleMenu";
-import StaffScheduleMenu from "./StaffScheduleMenu";
+import { ExpandMore } from "@mui/icons-material";
+
+// THIS IS THE SOURCE OF THE MENU ITEM CONFIG
+import menus from "../config/menus"; //
+import DrawerMenu from "./DrawerMenuListItem";
+import AppBarMenu from "./NavMenu";
+////////////////////////////////////////////
 
 // Consts
 const drawerWidth = 240;
 
-// Nav menu items that spawn a dialog box
-const navDialogs = [
-  { label: "Attendance", dialog: "attendance", reqRole: "counselor" },
-  { label: "Cabin Lists", dialog: "cabinlist", reqRole: "counselor" },
-  { label: "Give Award", dialog: "giveaward", reqRole: "counselor" },
-  { label: "Activity Schedule", dialog: "programming", reqRole: "programming" },
-  {label: "Activity Sign Up", dialog: "signup", reqRole: "counselor"},
-  {
-    label: "Cabin Assignment",
-    dialog: "cabinassignment",
-    reqRole: "unit_head",
-  },
-  { label: "Staff Scheduling", dialog: "staffing", reqRole: "admin" },
-];
-
-/** App bar items that spawn dialogs*/
-const appBarDialogOptions = [
-  { label: "Attendance", dialog: "attendance", reqRole: "counselor" },
-  { label: "Cabin Lists", dialog: "cabinlist", reqRole: "counselor" },
-  { label: "Give Award", dialog: "giveaward", reqRole: "counselor" },
-];
-
-// <MenuItem>
-//   <DownloadAwardsMenu handleParentClose={handleClose} />
-// </MenuItem>
-// Nav items for admin only
-const adminNavItems = [{ label: "Users", url: "/users" }];
-
-/** Filter role based links on reqRole property*/
-const prepareRoleMenuItems = (items, auth) => {
-  return items.filter((item) => {
-    switch (item.reqRole) {
-      case "admin":
-        return isAdmin(auth);
-      case "unit_head":
-        return isUnitHead(auth);
-      case "programming":
-        return isProgramming(auth);
-      case "counselor":
-        return true;
-      case undefined:
-        return true;
-      default:
-        return false;
-    }
-  });
+const createAccordionMenu = (name, items, handleDialogs, auth) => {
+  return (
+    <Accordion>
+      <AccordionSummary
+        onClick={(e) => e.stopPropagation()}
+        expandIcon={<ExpandMore />}
+      >
+        {name}
+      </AccordionSummary>
+      <AccordionDetails>
+        <List>
+          <DrawerMenu items={items} handleDialogs={handleDialogs} auth={auth} />
+        </List>
+      </AccordionDetails>
+    </Accordion>
+  );
 };
 
 /** Nav menu button that is not a link*/
@@ -87,209 +56,69 @@ export const NavMenuButton = ({ children, onClick }) => {
   );
 };
 
-/** Turn items into nav bar dialog options*/
-const MenuDialogs = ({ items, handleDialogs, auth }) => {
-  const handleDialog = (dialogName) => {
-    handleDialogs(dialogName);
-  };
-  return prepareRoleMenuItems(items, auth).map((item) => (
-    <NavMenuButton
-      key={`nav-${item.label}`}
-      onClick={() => {
-        handleDialog(item.dialog);
-      }}
-    >
-      {item.label}
-    </NavMenuButton>
-  ));
-};
-
-/** Turn items into drawer dialog options */
-const DrawerDialogs = ({ items, handleDialogs, auth }) => {
-  const handleDialog = (dialogName) => {
-    handleDialogs(dialogName);
-  };
-
-  return (
-    <List>
-      {prepareRoleMenuItems(items, auth).map((item) => (
-        <ListItem key={"drawer-" + item.label}>
-          <ListItemButton
-            component={Button}
-            onClick={() => {
-              handleDialog(item.dialog);
-            }}
-          >
-            <ListItemText primary={item.label} />
-          </ListItemButton>
-        </ListItem>
-      ))}
-    </List>
-  );
-};
-
-/** A Menu that opens on click*/
-const MenuNav = ({ title, items, onClick, children }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const handleItemClick = (item) => {
-    onClick && onClick(item);
-    handleClose();
-  };
-  return (
-    <>
-      <NavMenuButton onClick={handleMenu}>
-        <Typography>{title}</Typography>
-      </NavMenuButton>
-      <Menu
-        id="menu-appbar"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        {children}
-        {items.map((item) => (
-          <MenuItem key={`menuItem-${item.label}`}>
-            <Button
-              onClick={() => {
-                handleItemClick(item);
-              }}
-              href={item.url}
-            >
-              {item.label}
-            </Button>
-          </MenuItem>
-        ))}
-      </Menu>
-    </>
-  );
-};
-
-/** The navigation options on the Drawer */
-const DrawerNav = ({ items, auth }) => {
-  return (
-    <List>
-      {prepareRoleMenuItems(items, auth).map((item) => {
-        return (
-          <ListItem key={`drawer-nav-${item.name}`}>
-            <ListItemButton component={Button} href={item.url}>
-              <ListItemText primary={item.label} />
-            </ListItemButton>
-          </ListItem>
-        );
-      })}
-    </List>
-  );
-};
-
 /** The main App Bar and Drawer*/
 function NavDrawer(props) {
   const auth = useContext(UserContext);
   const { handleDialogs } = props;
   const { window } = props;
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
-  /** Schedule Menu that each open dialogs **/
-  const scheduleMenuOptions = [
-    {
-      label: "Activity Sign Up",
-      reqRole: "counselor",
-      onClick: () => {
-        handleDialogs("signup");
-      },
-    },
-    {
-      label: "Cabin Assignment",
-      reqRole: "unit_head",
-      onClick: () => {
-        handleDialogs("cabinassignment");
-      },
-    },
-    {
-      label: "Programming: Activities",
-      reqRole: "programming",
-      onClick: () => {
-        handleDialogs("programming");
-      },
-    },
-    {
-      label: "Programming: Staff",
-      reqRole: "admin",
-      onClick: () => {
-        handleDialogs("staffing");
-      },
-    },
-  ];
-
-  const scheduleMenuItems = (auth) => [
-    ...prepareRoleMenuItems(scheduleMenuOptions, auth),
-  ];
 
   /** The Drawer itself*/
   const drawer = (
-    <Box onClick={handleDrawerToggle}>
-      <DrawerDialogs
-        handleDialogs={handleDialogs}
-        auth={auth}
-        items={navDialogs}
-      />
-      <AllCamperMenu drawerMenu />
-    <StaffScheduleMenu drawerMenu />
-
-      <Divider />
-
-      {/* Admin items at bottom */}
-      {isAdmin(auth) && (
-        <>
-          <DownloadAwardsMenu drawerMenu />
-          <DrawerNav items={adminNavItems} auth={auth} />
-        </>
-      )}
-      <Box
-        sx={{
-          display: "flex",
-          width: "100%",
-          justifyContent: "center",
-          marginTop: "4rem",
-        }}
-      >
-        <Button
-          variant="outlined"
-          color="warning"
-          onClick={() => {
-            auth.logOut();
+    <Drawer
+      container={container}
+      variant="temporary"
+      anchor="right"
+      open={mobileOpen}
+      onClose={handleDrawerToggle}
+      ModalProps={{
+        keepMounted: true, // Better open performance on mobile.
+      }}
+      sx={{
+        "& .MuiDrawer-paper": {
+          boxSizing: "border-box",
+          width: drawerWidth,
+        },
+      }}
+    >
+      <Box onClick={handleDrawerToggle}>
+        <Divider />
+        {createAccordionMenu("Schedule", menus.schedule, handleDialogs, auth)}
+        {createAccordionMenu("Campers", menus.campers, handleDialogs, auth)}
+        {createAccordionMenu("Other", menus.other, handleDialogs, auth)}
+        {isAdmin(auth) &&
+          createAccordionMenu("Admin", menus.admin, handleDialogs, auth)}
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "center",
+            marginTop: "4rem",
           }}
         >
-          Log Out
-        </Button>
+          <Button
+            variant="outlined"
+            color="warning"
+            onClick={() => {
+              auth.logOut();
+            }}
+          >
+            Log Out
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </Drawer>
   );
-
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <>
+      {/* THE TOP MENU BAR */}
       <AppBar position="sticky" component="nav">
         <Box width="100%">
           <Toolbar>
@@ -319,29 +148,33 @@ function NavDrawer(props) {
               <MenuIcon />
             </IconButton>
             <Box sx={{ display: { xs: "none", md: "block" } }}>
-              <MenuDialogs
-                auth={auth}
-                items={appBarDialogOptions}
+              <AppBarMenu
+                name="Schedule"
+                items={menus.schedule}
                 handleDialogs={handleDialogs}
-              />
-              <AllCamperMenu />
-
-              <ScheduleMenu
                 auth={auth}
-                title="Schedule"
-                items={scheduleMenuItems(auth)}
-                onClick={(item) => {
-                  item.onClick();
-                }}
               />
-
+              <AppBarMenu
+                name="Campers"
+                items={menus.campers}
+                handleDialogs={handleDialogs}
+                auth={auth}
+              />
+              <AppBarMenu
+                name="Other"
+                items={menus.other}
+                handleDialogs={handleDialogs}
+                auth={auth}
+              />
               {isAdmin(auth) && (
-                <MenuNav
+                <AppBarMenu
+                  name="Admin"
+                  items={menus.admin}
+                  handleDialogs={handleDialogs}
                   auth={auth}
-                  title="Admin"
-                  items={adminNavItems}
-                ></MenuNav>
+                />
               )}
+
               <Button
                 sx={{ marginLeft: "2rem" }}
                 onClick={() => {
@@ -358,24 +191,8 @@ function NavDrawer(props) {
         </Box>
       </AppBar>
       <Box component="nav">
-        <Drawer
-          container={container}
-          variant="temporary"
-          anchor="right"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
+        {/* MOBILE DRAWER MENU */}
+        {drawer}
       </Box>
     </>
   );

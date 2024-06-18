@@ -20,18 +20,17 @@ const useActivityAttendance = (period, cabin) => {
 		activities.forEach((act) => {
 			listing.activityIds.push(act.id);
 			listing[act.id] = {
-				name: act.name,
+				id: act.id,
+				name: act.activityName,
 				description: act.description,
-				campers: [],
+				capacity: act.capacity,
+				campers: act.campers
 			};
 		});
 		campers.forEach((camper) => {
 			if (camper.activityId === 'Unassigned') {
 				listing.unassigned.campers.push(camper);
-			} else {
-				listing[camper.activityId].campers.push(camper);
-			}
-		});
+			} 		});
 		setLists(listing);
 		if (withLoading) { setLoading(false) }
 	},

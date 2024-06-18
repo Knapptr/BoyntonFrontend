@@ -1,12 +1,13 @@
 import { useContext, useState, useEffect, useCallback } from "react";
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import UserContext from "../components/UserContext";
 import fetchWithToken from "../fetchWithToken";
 import WeekContext from "../components/WeekContext";
 import { useParams } from "react-router-dom";
 import {
-    Card,
-  Box, Stack,
+  Card,
+  Box,
+  Stack,
   Drawer,
   Grid,
   IconButton,
@@ -24,11 +25,12 @@ const StaffSelectionSources = {
   ACTIVITY: (activity) => activity.sessionId,
 };
 const StaffSchedule = () => {
+  // define contexts and vars
   const auth = useContext(UserContext);
   const { weekNumber } = useParams();
-  const { getWeekByNumber} = useContext(WeekContext);
+  const { getWeekByNumber } = useContext(WeekContext);
   const currentWeek = getWeekByNumber(Number.parseInt(weekNumber));
-
+  // define states
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
   const selectedDay = useCallback(() => {
     const currentWeek = getWeekByNumber(Number.parseInt(weekNumber));
@@ -36,15 +38,82 @@ const StaffSchedule = () => {
   }, [selectedDayIndex, weekNumber, getWeekByNumber]);
 
   const [selectedPeriodIndex, setSelectedPeriodIndex] = useState(0);
-  const selectedPeriod = useCallback(() => {
-    const currentDay = selectedDay();
-    return currentDay?.periods[selectedPeriodIndex];
-  }, [selectedPeriodIndex, selectedDay]);
+  /** staff are sorted. in the assigned section, they are arranged by activity session assignments*/
+  const [staff, setStaff] = useState({ all: [], assigned: {count:0}, unassigned: [] });
 
   const [viableStaff, setViableStaff] = useState([]);
 
   const [selectedStaff, setSelectedStaff] = useState([]);
 
+  /** Get unassigned staff for period */
+  const fetchViableStaff = useCallback(
+    async (period) => {
+      const result = await fetchWithToken(
+        `/api/periods/${period.id}/staff/`,
+        {},
+        auth
+      );
+      if (!result) {
+        // no viable staff, OR no staff sessions
+        console.error("no staff. Handle this");
+      }
+      const viableStaffAssignments = await result.json();
+      const allStaff = viableStaffAssignments;
+
+      const unassignedStaff = viableStaffAssignments.filter(
+        (s) => s.activitySessionId === null
+      );
+      const assignedStaff = viableStaffAssignments.filter(
+        (s) => s.activitySessionId !== null
+      ).reduce((s,byActSession)=>{
+        const activitySessionId = s.activitySessionId;
+        if(byActSession[activitySessionId] === undefined){
+          byActSession[activitySessionId] = []
+        }
+        byActSession[activitySessionId].push(s);
+        byActSession.count += 1;
+        return byActSession;
+      },{count:0});
+      setStaff({
+        all: allStaff,
+        assigned: assignedStaff,
+        unassigned: unassignedStaff,
+      });
+      setViableStaff(viableStaffAssignments);
+    },
+    [auth]
+  );
+  // get selected period from selecton info
+  const selectedPeriod = useCallback(() => {
+    const currentDay = selectedDay();
+    return currentDay?.periods[selectedPeriodIndex];
+  }, [selectedPeriodIndex, selectedDay]);
+
+  //** Get activities for selected period 
+  const fetchActivities = useCallback(async () => {
+    if (selectedPeriod() !== undefined) {
+      const result = await fetchWithToken(
+        `/api/periods/${selectedPeriod()?.id}`,
+        {},
+        auth
+      );
+      const periodData = await result.json();
+      // sort all activity staff lists to preserve ordering
+      periodData.activities.forEach(act=>{
+        act.staff.sort((a,b)=>a.firstName.localeCompare(b.firstName));
+      })
+      setActivities(periodData.activities);
+    }
+  }, [auth, selectedPeriod]);
+  // Effects
+  /** Set assignedstaff on mount */
+  useEffect(() => {
+    fetchActivities();
+    if (selectedPeriod()) {
+      fetchViableStaff(selectedPeriod());
+    }
+  }, [fetchActivities, selectedPeriod, fetchViableStaff]);
+  // Handlers
   /** Add all selected staff to activity */
   const addSelectedToActivity = async (activity, activityIndex) => {
     if (
@@ -56,13 +125,12 @@ const StaffSchedule = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          staff: selectedStaff.map((s) => ({
-            staffSessionId: s.staffer.staffSessionId,
-          })),
+          staffOns: selectedStaff.map((s) => ( s.staffer.staffOnPeriodId)),
         }),
       };
       //// DO EAGER UPDATE
       eagerUpdateInsertion(selectedStaff, activityIndex);
+      console.log("Eager insertion update");
       // Clear Selection after update
       clearSelectedStaff();
       //// On DB response
@@ -82,7 +150,7 @@ const StaffSchedule = () => {
   const removeFromActivity = async (sourceIndex, staffer) => {
     clearSelectedStaff();
     const source = activities[sourceIndex];
-    const url = `/api/activity-sessions/${source.sessionId}/staff/${staffer.staffActivityId}`;
+    const url = `/api/activity-sessions/${source.sessionId}/staff/${staffer.staffOnPeriodId}`;
     const options = {
       method: "DELETE",
     };
@@ -102,27 +170,10 @@ const StaffSchedule = () => {
       console.log("Something went wrong. TODO");
     }
   };
-  /** Get unassigned staff for period */
-  const fetchViableStaff = useCallback(
-    async (period) => {
-      const result = await fetchWithToken(
-        `/api/staff-sessions/period/${period.id}/viable`,
-        {},
-        auth
-      );
-      if (!result) {
-        // no viable staff, OR no staff sessions
-        console.log("no staff. Handle this");
-      }
-      const viableStaffAssignments = await result.json();
-      setViableStaff(viableStaffAssignments);
-    },
-    [auth]
-  );
 
   /** Update Staffing UI Eagerly on adding to activity before DB update */
   const eagerUpdateInsertion = (sourceStaffList, destinationIndex) => {
-    let newViable = [...viableStaff];
+    let newUnassigned = [...staff.unassigned];
     let newActivities = [...activities];
     for (const { sourceIndex, staffer } of sourceStaffList) {
       if (sourceIndex === destinationIndex) {
@@ -132,20 +183,21 @@ const StaffSchedule = () => {
       //find where the source is coming from update lists accordingly
       //remove from source
       if (sourceIndex === StaffSelectionSources.UNASSIGNED()) {
-        newViable = newViable.filter(
-          (s) => s.staffSessionId !== staffer.staffSessionId
+        newUnassigned = newUnassigned.filter(
+          (s) => s.staffOnPeriodId !== staffer.staffOnPeriodId
         );
       } else {
         //copy the list of staff from activity at sourceIndex
         // Uptade at the source Index and remove staff
         let newStaffList = [...newActivities[sourceIndex].staff].filter(
-          (s) => s.staffSessionId !== staffer.staffSessionId
+          (s) => s.staffOnPeriodId !== staffer.staffOnPeriodId
         );
         //update activities list
         newActivities[sourceIndex].staff = newStaffList;
       }
       // INSERTION
       const newStaffList = [...newActivities[destinationIndex].staff, staffer];
+      console.log({newStaffList});
       // Sort to prevent reordering
       newStaffList.sort((a, b) => a.firstName.localeCompare(b.firstName));
       // update
@@ -153,7 +205,7 @@ const StaffSchedule = () => {
     }
 
     setActivities(newActivities);
-    setViableStaff(newViable);
+    setStaff(s=>({...s,unassigned:newUnassigned}));
   };
 
   /** Eagerly update UI on removal of staff  from activity */
@@ -162,7 +214,7 @@ const StaffSchedule = () => {
     const newActivities = [...activities];
     let newStaffList = [...newActivities[sourceIndex].staff];
     newStaffList = newStaffList.filter(
-      (s) => s.staffSessionId !== staffer.staffSessionId
+      (s) => s.staffOnPeriodId !== staffer.staffOnPeriodId
     );
     newActivities[sourceIndex].staff = newStaffList;
     setActivities(newActivities);
@@ -179,26 +231,6 @@ const StaffSchedule = () => {
   const clearActivities = () => {
     setActivities([]);
   };
-  //** Get staff for selected period
-  const fetchActivities = useCallback(async () => {
-    if (selectedPeriod() !== undefined) {
-      const result = await fetchWithToken(
-        `/api/periods/${selectedPeriod()?.id}`,
-        {},
-        auth
-      );
-      const periodData = await result.json();
-      setActivities(periodData.activities);
-    }
-  }, [auth, selectedPeriod]);
-
-  /** Set assignedstaff on mount */
-  useEffect(() => {
-    fetchActivities();
-    if (selectedPeriod()) {
-      fetchViableStaff(selectedPeriod());
-    }
-  }, [fetchActivities, selectedPeriod, fetchViableStaff]);
 
   // useEffect(()=>{
   //   fetchActivities()
@@ -256,10 +288,16 @@ const StaffSchedule = () => {
         }}
       >
         <Box mb={topMargin} />
-     <Card sx={{mb:1}}><Typography variant="h6">{viableStaff.length===0 ? "No Available Staff" :"Available Staff"}</Typography></Card>
+        <Card sx={{ mb: 1 }}>
+          <Typography variant="h6">
+            {viableStaff.length === 0
+              ? "No Available Staff"
+              : "Available Staff"}
+          </Typography>
+        </Card>
         <ViableStaffList
           isSelected={isSelected}
-          staff={viableStaff}
+          staff={staff.unassigned}
           selectStaff={handleSelectStaff}
         />
       </Drawer>
@@ -283,7 +321,7 @@ const StaffSchedule = () => {
           maxWidth={600}
           justifyContent="center"
           alignItems="center"
-          direction={{xs:"column",md:"row"}}
+          direction={{ xs: "column", md: "row" }}
         >
           <ToggleButtonGroup
             size="small"
@@ -363,14 +401,12 @@ const ActivityStaffList = ({
   // const auth = useContext(UserContext);
 
   return (
-    <Grid container spacing={{xs:1,sm:2}} >
+    <Grid container spacing={{ xs: 1, sm: 2 }}>
       {activities.map((activity, activityIndex) => (
-        <Grid 
-            key={`activity-${activity.sessionId}`}
-        item xs={12} sm={6}>
+        <Grid key={`activity-${activity.sessionId}`} item xs={12} sm={6}>
           <Box
             bgcolor="background.secondary"
-        padding={1}
+            padding={1}
             onClick={(e) => {
               e.stopPropagation();
               handleActivityAssignment(activity, activityIndex);
@@ -378,25 +414,24 @@ const ActivityStaffList = ({
           >
             <Stack direction="row" width={1} justifyContent="space-around">
               <Typography variant="h6">{activity.name}</Typography>
-                <Typography variant="subtitle2">
-                  {(activity.staff.length === 0 && "No staff assigned") ||
-                    `${activity.staff.length} Assigned`}
-                </Typography>
+              <Typography variant="subtitle2">
+                {(activity.staff.length === 0 && "No staff assigned") ||
+                  `${activity.staff.length} Assigned`}
+              </Typography>
               <Typography variant="h6">
                 {activity.campers.length} campers
               </Typography>
             </Stack>
             <Grid container spacing={1}>
-              <Grid item component="header" xs={12}>
-              </Grid>
+              <Grid item component="header" xs={12}></Grid>
               {activity.staff.map((staffer, index) => (
                 <Grid
                   item
                   xs={12}
-                  key={`activity-staff-${staffer.staffSessionId}`}
+                  key={`activity-staff-${staffer.staffOnPeriodId}`}
                 >
                   <StaffItem
-                   small
+                    small
                     staffer={staffer}
                     index={index}
                     isSelected={isSelected(staffer)}
@@ -405,11 +440,16 @@ const ActivityStaffList = ({
                       selectStaff(activityIndex, staffer);
                     }}
                   >
-                <IconButton onClick={(e)=>{
-                  e.stopPropagation();
-                  remove(activityIndex,staffer)
-                }}size="small"><HighlightOffIcon/></IconButton>
-                </StaffItem>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        remove(activityIndex, staffer);
+                      }}
+                      size="small"
+                    >
+                      <HighlightOffIcon />
+                    </IconButton>
+                  </StaffItem>
                 </Grid>
               ))}
             </Grid>

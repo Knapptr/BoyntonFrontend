@@ -12,6 +12,9 @@ export const postCampersToActivity = async (campers, activitySessionId, auth) =>
     auth
   );
 
+  if (result.status !== 200){
+    throw new Error("Invalid request or bad connection");
+  }
   return result;
 }
 

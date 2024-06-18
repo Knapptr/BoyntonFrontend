@@ -9,12 +9,16 @@ import {
   Typography,
   TableContainer,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import fetchWithToken from "../fetchWithToken";
 import UserContext from "../components/UserContext";
 import { Container, styled } from "@mui/system";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "cursor": "pointer",
+  "&:hover":{
+    filter: "brightness(0.75)"
+  },
   "&:nth-of-type(even)": {
     backgroundColor: "silver",
   },
@@ -25,10 +29,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:last-child td, &:last-child th": {
     border: 0,
   },
+  
 }));
 
 const AllCampers = () => {
+  
   const auth = useContext(UserContext);
+  const navigate = useNavigate();
   const { weekNumber } = useParams("weekNumber");
   const [campers, setCampers] = useState([]);
 
@@ -64,7 +71,7 @@ const AllCampers = () => {
             </TableHead>
             <TableBody>
               {campers.map((c) => (
-                <StyledTableRow>
+                <StyledTableRow onClick={()=>navigate(`/camper/${c.id}`)}>
                   <TableCell>{c.lastName}</TableCell>
                   <TableCell>{c.firstName}</TableCell>
                   <TableCell>{c.age}</TableCell>

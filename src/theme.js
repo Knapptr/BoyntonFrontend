@@ -65,6 +65,7 @@ const theme = createTheme({
       // Other potential default bg colors
       // default: '#e9f4ee',
       //default: "#E2EEE7",
+      disabled:"#a3a8a8",
       default: "#D3E8D7",
       primary: {
         light: "#aaba77"

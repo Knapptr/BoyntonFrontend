@@ -6,6 +6,9 @@ import CabinAssignmentDialog from "./CabinAssignmentDialog";
 import {Container } from "@mui/material";
 import WeekSelectDialog from "./WeekSelectDialog";
 import ActivitySignUpDialog from "./ActivitySignUpDialog";
+import RegistrationDialog from "./RegistrationDialog";
+import PrintAwardsDialog from "./PrintAwardsDialog";
+import CamperListDialog from "./CamperListDialog";
 
 const NavWrapper = () => {
 	const [openDialog,setOpenDialog] = useState(null);
@@ -47,6 +50,12 @@ const NavWrapper = () => {
 
 	  {/* Activity Sign Up */}
 	  <ActivitySignUpDialog open={openDialog==="signup"} onClose={handleClose}/>
+	  {/* Print Awards Dialog*/}
+	  <PrintAwardsDialog open={openDialog==="printawards"} onClose={handleClose}/>
+	  {/* Registration Dialog*/}
+	  <RegistrationDialog open={openDialog==="registration"} onClose={handleClose}/>
+	  {/* Camper List Dialog*/}
+	  <CamperListDialog open={openDialog==="camperlist"} onClose={handleClose}/>
 	  {/* App Content */}
           <Outlet />
 

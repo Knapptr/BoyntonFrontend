@@ -205,7 +205,7 @@ const ScorePane = () => {
       <Box>
         <Card>
           <Typography variant="h5" component="h4">
-            2023 Scoreboard
+            Scoreboard
           </Typography>
           <Stack
             direction="row"

@@ -1,26 +1,19 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import UserContext from "../components/UserContext";
 import fetchWithToken from "../fetchWithToken";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
+  Autocomplete,
   Box,
   Button,
   Card,
   CardContent,
   Container,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   Divider,
-  Fab,
   Fade,
-  FormControl,
   Grid,
-  MenuItem,
+  List,
+  ListItem,
+  ListItemText,
   Paper,
   Stack,
   Table,
@@ -35,278 +28,21 @@ import {
   Typography,
 } from "@mui/material";
 import { StaffBadge } from "../components/styled";
-import useWeeks from "../hooks/useWeeks";
 import { Helmet } from "react-helmet";
 import ActivityInformationDialog from "../components/ActivityDialog";
-import DailySchedules from "../components/Schedule";
+import useDialogs from "../hooks/useDialogs";
+import {
+  EmojiEvents,
+  Leaderboard,
+  PersonSearch,
+  Scoreboard,
+} from "@mui/icons-material";
+import { useNavigate } from "react-router";
 
-const AddScoreDialog = ({ onClose, show, week }) => {
-  const TEAMS = ["Naumkeag", "Tahattawan"];
-  const auth = useContext(UserContext);
-
-  const fetchAddPoints = async () => {
-    const reqBody = { ...fields, weekNumber: week.number };
-    const url = "/api/scores";
-    const options = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(reqBody),
-    };
-    const response = await fetchWithToken(url, options, auth);
-    await response.json();
-  };
-
-  const handleSubmit = async () => {
-    await fetchAddPoints();
-    handleClose();
-  };
-
-  const initFields = { awardedFor: "", awardedTo: TEAMS[0], points: 0 };
-  const [fields, setFields] = useState(initFields);
-
-  const handleChange = (e) => {
-    setFields((f) => ({ ...f, [e.target.name]: e.target.value }));
-  };
-
-  const allFieldsFilled = () => {
-    return (
-      fields.awardedFor.trim().length > 0 &&
-      fields.points > 0 &&
-      fields.awardedTo.trim().length > 0
-    );
-  };
-  const handleClose = () => {
-    onClose();
-    setFields(initFields);
-  };
-
-  return (
-    week && (
-      <Dialog onClose={handleClose} open={show}>
-        <DialogTitle>Award Points: Week {week.display}</DialogTitle>
-        <DialogContent>
-          <Box component="form" autoComplete="off">
-            <FormControl>
-              <Stack direction="row" paddingY={2} gap={2}>
-                <TextField
-                  sx={{
-                    minWidth: "10rem",
-                  }}
-                  value={fields.awardedTo}
-                  onChange={handleChange}
-                  name="awardedTo"
-                  id="outlined-basic"
-                  label="Team"
-                  variant="outlined"
-                  select
-                >
-                  {TEAMS.map((team) => (
-                    <MenuItem value={team} key={`team-select-${team}`}>
-                      {team}
-                    </MenuItem>
-                  ))}
-                </TextField>
-
-                <TextField
-                  name="points"
-                  value={fields.points}
-                  onChange={handleChange}
-                  inputProps={{ min: 1 }}
-                  id="outlined-basic"
-                  label="Points"
-                  type="number"
-                  variant="outlined"
-                />
-              </Stack>
-              <Box width={1}>
-                <TextField
-                  name="awardedFor"
-                  value={fields.awardedFor}
-                  onChange={handleChange}
-                  id="outlined-basic"
-                  label="Reason"
-                  variant="outlined"
-                />
-              </Box>
-            </FormControl>
-          </Box>
-          <Box display="flex" justifyContent="space-around" marginY={2}>
-            <Button variant="outlined" color="warning" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              color="success"
-              enabled={allFieldsFilled() ? "false" : undefined}
-              onClick={() => {
-                if (allFieldsFilled()) {
-                  handleSubmit();
-                }
-              }}
-            >
-              Score!
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
-    )
-  );
-};
-const ScorePane = () => {
-  const auth = useContext(UserContext);
-  const [scores, setScores] = useState(null);
-  const { selectedWeek, WeekSelection } = useWeeks();
-
-  const getScore = useCallback(
-    async (weekNumber) => {
-      const url = `/api/weeks/${weekNumber}/scores`;
-      const scoresResp = await fetchWithToken(url, {}, auth);
-      const data = await scoresResp.json();
-      setScores(data);
-    },
-    [auth]
-  );
-
-  useEffect(() => {
-    if (selectedWeek()) {
-      getScore(selectedWeek().number);
-    }
-  }, [selectedWeek, getScore]);
-
-  const scoreRows = () => {
-    if (!scores) {
-      return false;
-    }
-    const teams = scores.summerTotals.map((d) => d.team);
-    const data = teams.map((team) => {
-      const summerCol = scores.summerTotals.find((d) => d.team === team);
-      const summerTotal = (summerCol && summerCol.total) || 0;
-
-      const weekCol = scores.weekTotals.find((d) => d.team === team);
-      const weekTotal = (weekCol && weekCol.total) || 0;
-      return {
-        team: team,
-        summerTotal,
-        weekTotal,
-      };
-    });
-    return data;
-  };
-
-  const [showAdd, setShowAdd] = useState(false);
-  const handleOpen = () => {
-    setShowAdd(true);
-  };
-  const handleClose = () => {
-    setShowAdd(false);
-  };
-  return (
-    <>
-      <Box>
-        <Card>
-          <Typography variant="h5" component="h4">
-            Scoreboard
-          </Typography>
-          <Stack
-            direction="row"
-            alignItems="center"
-            paddingX={2}
-            marginBottom={1}
-          >
-            <WeekSelection />
-            <Fab
-              size="small"
-              color="success"
-              sx={{ marginLeft: "2rem" }}
-              disabled={!selectedWeek()}
-              onClick={selectedWeek() && handleOpen}
-            >
-              <AddIcon />
-            </Fab>
-          </Stack>
-          <AddScoreDialog
-            show={showAdd}
-            onClose={() => {
-              getScore(selectedWeek().number);
-              handleClose();
-            }}
-            week={selectedWeek()}
-          />
-          {scores && (
-            <>
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Team</TableCell>
-                      <TableCell align="right">Week {}</TableCell>
-                      <TableCell align="right">All Summer</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {scoreRows().map((row) => (
-                      <TableRow key={`team-row-${row.team}`}>
-                        <TableCell component="th" scope="row">
-                          {row.team}
-                        </TableCell>
-                        <TableCell align="right">{row.weekTotal}</TableCell>
-                        <TableCell align="right">{row.summerTotal}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <Accordion>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography>Week Details</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <TableContainer>
-                    <Table size="small" stickyHeader>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Team</TableCell>
-                          <TableCell>Points</TableCell>
-                          <TableCell>Day</TableCell>
-                          <TableCell>Reason</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {scores.events.map((event, index) => (
-                          <TableRow key={`event-${index}`}>
-                            <TableCell>{event.team}</TableCell>
-                            <TableCell>{event.points}</TableCell>
-                            <TableCell>
-                              <Typography variant="caption" component={"span"}>
-                                {event.day}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography variant="caption" component={"span"}>
-                                {event.for}
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </AccordionDetails>
-              </Accordion>
-            </>
-          )}
-        </Card>
-      </Box>
-    </>
-  );
-};
 const ProfilePage = () => {
   const auth = useContext(UserContext);
   const [userData, setUserData] = useState(undefined);
+  const { AllDialogs, handleDialogs } = useDialogs();
 
   const userBadges = () => {
     if (!userData) {
@@ -346,10 +82,12 @@ const ProfilePage = () => {
       <Helmet>
         <title>{auth.userData.user.username}-Boynton</title>
       </Helmet>
+
       <Box id="profilePage" width={1} py={2} px={1}>
         {userData && (
           <>
             <Container maxWidth="md">
+              <AllDialogs />
               <Box component="header" marginBottom={4}>
                 <Card sx={{ paddingBottom: 1 }} elevation={4}>
                   <CardContent>
@@ -392,28 +130,116 @@ const ProfilePage = () => {
             </Container>
             <Grid
               container
-              spacing={{ xs: 2, sm: 1, md: 2, lg: 3 }}
+              spacing={1}
+              alignItems="center"
               justifyContent="center"
+              width={1}
             >
-              <Grid item xs={12} sm={12} md={7} lg={8}>
-                <Stack spacing={1}>
-                  <UserSchedule user={userData} sessions={userData.sessions} />
-
-                </Stack>
+              <Grid item xs={6}>
+                <Button
+                  variant="contained"
+                  color="warning"
+                  fullWidth
+                  onClick={() => {
+                    handleDialogs("giveaward");
+                  }}
+                  startIcon={<EmojiEvents />}
+                >
+                  Give Award
+                </Button>
               </Grid>
-              <Grid item xs={12} sm={12} md={5} lg={4}>
-                <Stack spacing={2}>
-                  <ScorePane />
-                  <Paper sx={{ py: 2, px: 1 }}>
-                    <Typography variant="h5">Daily Schedule</Typography>
-                    <DailySchedules />
-                  </Paper>
-                </Stack>
+              <Grid item xs={6}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  color="success"
+                  startIcon={<Scoreboard />}
+                  onClick={() => {
+                    handleDialogs("awardpointsselect");
+                  }}
+                >
+                  Award Points
+                </Button>
               </Grid>
+              <Grid item xs={6}>
+                <Button
+                  href={process.env.REACT_APP_FL_OBS_URL}
+                  startIcon={<Leaderboard />}
+                  variant="contained"
+                  color="info"
+                  target="blank"
+                  fullWidth
+                >
+                  Eval FL
+                </Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Button
+                  fullWidth
+                  href={process.env.REACT_APP_STAFF_OBS_URL}
+                  target="blank"
+                  startIcon={<PersonSearch />}
+                  variant="contained"
+                  color="secondary"
+                >
+                  Staff Obs.
+                </Button>
+              </Grid>
+            </Grid>
+            <Box my={1}>
+              <CamperSearch />
+            </Box>
+            <Grid item xs={12} sm={12} md={7} lg={8}>
+              <Stack spacing={1}>
+                <UserSchedule user={userData} sessions={userData.sessions} />
+              </Stack>
             </Grid>
           </>
         )}
       </Box>
+    </>
+  );
+};
+const CamperSearch = () => {
+  const auth = useContext(UserContext);
+  const navigate = useNavigate();
+  const [selectedCamper, setSelectedCamper] = useState(null);
+  const [campers, setCampers] = useState([]);
+
+  const handleChange = (e, v) => {
+    setSelectedCamper(v);
+    const url = `/camper/${v.id}`
+    navigate(url);
+  };
+  // effects
+  useEffect(() => {
+    const getCampers = async () => {
+      const url = "/api/campers";
+      const result = await fetchWithToken(url, {}, auth);
+      if (!result.ok) {
+        console.error("Something went wrong getting campers");
+        return;
+      }
+      const data = await result.json();
+      data.sort((a, b) => a.lastName.localeCompare(b.lastName));
+
+      setCampers(data);
+    };
+    getCampers();
+  }, [auth]);
+  // Get Camper Info
+  return (
+    <>
+      <Autocomplete
+        onChange={handleChange}
+        value={selectedCamper}
+        options={campers}
+        getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        renderInput={(params) => (
+          <TextField {...params} label="Camper Search" />
+        )}
+      />
     </>
   );
 };
@@ -498,7 +324,7 @@ const UserSchedule = ({ sessions, user }) => {
       />
       <Card sx={{ paddingY: 2, paddingX: 1 }}>
         <Typography variant="h5" component="h4">
-          My Schedule
+          My Weeks
         </Typography>
         <ToggleButtonGroup
           exclusive

@@ -11,17 +11,16 @@ import {
 import { useContext } from "react";
 import WeekContext from "./WeekContext";
 
-const WeekSelectDialog = ({ open, onClose,url,title }) => {
-  const {
-    weeks,
-    selectedWeek,
-    WeekSelection,
-  } = useContext(WeekContext);
+const WeekSelectDialog = ({ open, onClose, url, title, onSubmit }) => {
+  const { weeks, selectedWeek, WeekSelection } = useContext(WeekContext);
 
-  const handleClose = () => {
-    onClose();
+  const handleClose = (reason) => {
+    onClose(reason);
   };
   const handleSubmit = () => {
+    if (onSubmit) {
+      onSubmit(selectedWeek());
+    }
     handleClose();
   };
 
@@ -38,8 +37,11 @@ const WeekSelectDialog = ({ open, onClose,url,title }) => {
       maxWidth="sm"
     >
       <DialogTitle component="div">
-    <Typography variant="subtitle2">{title}</Typography>
-    <Typography variant="h6" fontWeight="bold">Select Week</Typography></DialogTitle>
+        <Typography variant="subtitle2">{title}</Typography>
+        <Typography variant="h6" fontWeight="bold">
+          Select Week
+        </Typography>
+      </DialogTitle>
       <Box width={1} px={1} mb={1}>
         <Grid
           container
@@ -54,20 +56,24 @@ const WeekSelectDialog = ({ open, onClose,url,title }) => {
         </Grid>
       </Box>
       <DialogActions>
-    <Stack direction="row" spacing={2}>
-        <Button color="warning" variant="outlined" onClick={handleClose}>
-          Nevermind
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          disabled={!selectedWeek()}
-          href={getUrl()}
-    color="primary"
-    variant="contained"
-        >
-          Go
-        </Button>
-    </Stack>
+        <Stack direction="row" spacing={2}>
+          <Button
+            color="warning"
+            variant="outlined"
+            onClick={() => handleClose("cancel")}
+          >
+            Nevermind
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={!selectedWeek()}
+            href={!onSubmit && getUrl()}
+            color="primary"
+            variant="contained"
+          >
+            Go
+          </Button>
+        </Stack>
       </DialogActions>
     </Dialog>
   );

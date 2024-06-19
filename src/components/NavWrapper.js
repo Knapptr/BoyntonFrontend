@@ -1,65 +1,19 @@
 import { Outlet } from "react-router-dom";
-import AttendanceDialog from "./AttendanceDialog";
-import { useState } from "react";
-import NavDrawer from "./NavDrawer"; 
-import CabinAssignmentDialog from "./CabinAssignmentDialog";
-import {Container } from "@mui/material";
-import WeekSelectDialog from "./WeekSelectDialog";
-import ActivitySignUpDialog from "./ActivitySignUpDialog";
-import RegistrationDialog from "./RegistrationDialog";
-import PrintAwardsDialog from "./PrintAwardsDialog";
-import CamperListDialog from "./CamperListDialog";
+import useDialogs from "../hooks/useDialogs";
+import NavDrawer from "./NavDrawer";
+import { Container } from "@mui/material";
 
 const NavWrapper = () => {
-	const [openDialog,setOpenDialog] = useState(null);
+  const { AllDialogs, handleDialogs } = useDialogs();
 
-	const handleDialogs = (dialogName)=>{
-		console.log("Handling dialogs")
-		console.log(dialogName)
-		setOpenDialog(dialogName)
-	}	
-	const handleClose = () => {setOpenDialog(null)}
-
-
-	
-	
   return (
     <>
-	  <NavDrawer handleDialogs={handleDialogs}/>
-	  
-	  <Container sx={{paddingX:0}} maxWidth="xl">
+      <NavDrawer handleDialogs={handleDialogs} />
 
-	  {/* Navigation Dialogs */}
-	  <WeekSelectDialog title="Give Award" open={openDialog==="giveaward"} onClose={handleClose} url="/award"/>
-
-	  {/* Cabin List*/}
-	  <WeekSelectDialog title="Cabin List" open={openDialog==="cabinlist"} onClose={handleClose} url="/cabins/list"/>
-
-	  {/* Programming */}
-	  <WeekSelectDialog title="Edit Activity Schedule" open={openDialog==="programming"} onClose={handleClose} url="/schedule/programming" />
-
-	  {/* Cabin Assignment */}
-	  <CabinAssignmentDialog open={openDialog=== "cabinassignment"} onClose={handleClose}/>
-
-	  {/* Attendance */}
-          <AttendanceDialog open={openDialog === "attendance" } onClose={handleClose} />
-
-	  {/* Staffing */}
-	  <WeekSelectDialog title="Staffirg"
-	  open={openDialog==="staffing"} onClose={handleClose} url="schedule/staffing" />
-
-	  {/* Activity Sign Up */}
-	  <ActivitySignUpDialog open={openDialog==="signup"} onClose={handleClose}/>
-	  {/* Print Awards Dialog*/}
-	  <PrintAwardsDialog open={openDialog==="printawards"} onClose={handleClose}/>
-	  {/* Registration Dialog*/}
-	  <RegistrationDialog open={openDialog==="registration"} onClose={handleClose}/>
-	  {/* Camper List Dialog*/}
-	  <CamperListDialog open={openDialog==="camperlist"} onClose={handleClose}/>
-	  {/* App Content */}
-          <Outlet />
-
-        </Container>
+      <Container sx={{ paddingX: 0 }} maxWidth="xl">
+        <AllDialogs />
+        <Outlet />
+      </Container>
     </>
   );
 };

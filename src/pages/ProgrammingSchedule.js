@@ -268,7 +268,7 @@ const ProgrammingSchedule = () => {
                                   activity.sessionId
                                 )
                               ) {
-                                handleDeleteRequest(activity.id);
+                                handleDeleteRequest(activity.sessionId);
                               }
                             }}
                           >

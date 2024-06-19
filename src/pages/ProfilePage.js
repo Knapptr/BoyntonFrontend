@@ -86,22 +86,11 @@ const ProfilePage = () => {
             <Container maxWidth="md">
               <AllDialogs />
               <Box component="header" marginBottom={4}>
-                <Card sx={{ paddingBottom: 1 }} elevation={4}>
-                  <CardContent>
-                    <Box marginBottom={1}>
-                      <Typography
-                        variant="subtitle1"
-                        color="text.secondary"
-                        textAlign="left"
-                        component="h3"
-                      >
-                        {userData.username}
-                      </Typography>
-                      <Typography variant="h5" textAlign="left" component="h3">
-                        {userData.firstName} {userData.lastName}
-                      </Typography>
-                    </Box>
-                    <Divider color="secondary" sx={{ marginY: 1 }} />
+          {/*
+            <Typography variant="h5" textAlign="left" component="h3">
+            {userData.firstName} {userData.lastName}
+            </Typography>
+          */}
                     <Stack
                       id="badgesList"
                       direction="row"
@@ -121,12 +110,11 @@ const ProfilePage = () => {
                         />
                       ))}
                     </Stack>
-                  </CardContent>
-                </Card>
               </Box>
             </Container>
             <Grid
               container
+          my={3}
               spacing={1}
               alignItems="center"
               justifyContent="center"
@@ -183,7 +171,7 @@ const ProfilePage = () => {
                 </Button>
               </Grid>
             </Grid>
-            <Box my={1}>
+            <Box my={3}>
               <CamperSearch />
             </Box>
             <Grid item xs={12} sm={12} md={7} lg={8}>

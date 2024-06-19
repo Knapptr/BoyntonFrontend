@@ -10,7 +10,7 @@ const NavWrapper = () => {
     <>
       <NavDrawer handleDialogs={handleDialogs} />
 
-      <Container sx={{ paddingX: 0 }} maxWidth="xl">
+      <Container sx={{ paddingX: 0.75 }} maxWidth="xl">
         <AllDialogs />
         <Outlet />
       </Container>

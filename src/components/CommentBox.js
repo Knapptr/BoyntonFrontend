@@ -21,31 +21,29 @@ const CommentBox = ({ comments, toggleCommentModal, refreshData }) => {
     }
   };
   return (
-    <Box w={1}>
-      <Box display="flex" justifyContent="end">
-        <IconButton onClick={toggleCommentModal}>
-          <AddCircleRounded />
-        </IconButton>
-      </Box>
+    <Box width={1}>
       {(comments.length === 0 && (
-        <Typography variant="subtitle1">None</Typography>
+        <Typography variant="subtitle1" textAlign="left">None</Typography>
       )) || (
         <Stack
           gap={2}
-          maxHeight="24rem"
+          maxHeight="15rem"
+        pt={3}
           sx={{ overflow: "hidden", overflowY: "scroll" }}
         >
           {comments.map((c) => (
-            <>
-              <Box maxWidth="36rem">
-                <Typography color="gray" align="left">
+            <Box>
+                <Typography align="left">{c.content}</Typography>
+            <Stack direction="row" alignItems="center" >
+                <Typography color="gray" align="left" variant="subtitle1" mr={2}>
                   {c.firstName} {c.lastName} -{" "}
                   {new Date(c.date).toISOString().split("T")[0]}
                 </Typography>
-                <Typography align="left">{c.content}</Typography>
                 {(c.username === auth.userData.user.username ||
                   auth.userData.user.role === "admin") && (
                   <Button
+                    variant="outlined"
+                    color="error"
                     onClick={() => {
                       deleteCommentFromServer(c.id);
                     }}
@@ -53,9 +51,9 @@ const CommentBox = ({ comments, toggleCommentModal, refreshData }) => {
                     Delete
                   </Button>
                 )}
-              </Box>
+            </Stack>
               <Divider flexItem />
-            </>
+            </Box>
           ))}
         </Stack>
       )}

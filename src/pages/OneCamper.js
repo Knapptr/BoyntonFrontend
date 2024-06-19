@@ -8,7 +8,6 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Divider,
   CardHeader,
   CardContent,
   List,
@@ -74,30 +73,6 @@ const CamperInfoBox = ({ camper }) => {
     </Box>
     </Grid>
     </Grid>
-  );
-};
-const WeeksBox = ({ camper }) => {
-  return (
-    <Box>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Number</TableCell>
-            <TableCell>Theme</TableCell>
-            <TableCell>Cabin</TableCell>
-            <TableCell>Other</TableCell>
-          </TableRow>
-        </TableHead>
-        {camper.weeks.map((w) => (
-          <TableRow>
-            <TableCell>{w.number}</TableCell>
-            <TableCell>{w.title}</TableCell>
-            <TableCell>{w.cabinName || "unassigned"}</TableCell>
-            <TableCell>{(w.fl && "FL") || (w.day && "Day")}</TableCell>
-          </TableRow>
-        ))}
-      </Table>
-    </Box>
   );
 };
 

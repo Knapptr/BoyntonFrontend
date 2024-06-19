@@ -256,7 +256,7 @@ const ProgrammingSchedule = () => {
                         <Typography variant="body2">No Activities.</Typography>
                       )}
                       {period.activities.map((activity) => (
-                        <ListItem key={`activity-list-${activity.id}`}>
+                        <ListItem key={`activity-list-${activity.sessionId}`}>
                           <ListItemText>{activity.name}</ListItemText>
                           <IconButton
                             disabled={waitingForDeleteRequest.includes(

@@ -6,9 +6,7 @@ import {
   Box,
   Button,
   Card,
-  CardContent,
   Container,
-  Divider,
   Fade,
   Grid,
   Paper,
@@ -35,6 +33,7 @@ import {
   Scoreboard,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
+import MyWeeksTabbed from "../components/MyWeeksTabbed";
 
 const ProfilePage = () => {
   const auth = useContext(UserContext);
@@ -175,6 +174,7 @@ const ProfilePage = () => {
               <CamperSearch />
             </Box>
             <Grid item xs={12} sm={12} md={7} lg={8}>
+          <MyWeeksTabbed />
               <Stack spacing={1}>
                 <UserSchedule user={userData} sessions={userData.sessions} />
               </Stack>

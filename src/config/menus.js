@@ -1,4 +1,4 @@
-import { Book, Brush, Cabin, CalendarViewMonth, Checklist, Construction, EmojiEvents, HolidayVillage, Leaderboard, ListAlt, PersonSearch, Print, SportsBasketball, WbSunny } from "@mui/icons-material"
+import { Book, Brush, Cabin, CalendarViewMonth, Checklist, Construction, EmojiEvents, HolidayVillage, Leaderboard, ListAlt, PersonSearch, Print, SportsBasketball, TrackChanges, WbSunny } from "@mui/icons-material"
 
 const menus ={
   schedule: [
@@ -83,6 +83,13 @@ const menus ={
     },
   ],
   other: [
+    {
+      type: "link",
+      label: "Staff Expectations",
+      href: process.env.REACT_APP_EXPECTATIONS,
+      reqRole: "counselor",
+      icon: <TrackChanges/>
+    },
     {
       type: "link",
       label: "FL Eval",

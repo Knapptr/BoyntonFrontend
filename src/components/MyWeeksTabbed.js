@@ -7,16 +7,14 @@ import {
   CircularProgress,
   Grid,
   List,
-  ListItem,
   ListItemButton,
   ListItemText,
   ListSubheader,
   Stack,
   Tab,
   Tabs,
-  Typography,
 } from "@mui/material";
-import { useContext, useState, useEffect, forwardRef } from "react";
+import { useContext, useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import fetchWithToken from "../fetchWithToken";
 import UserContext from "./UserContext";
@@ -75,11 +73,11 @@ const OneWeek = ({ week }) => {
     if (week.cabinSessionId) {
       getCabinList();
     }
-  }, [week]);
+  }, [week,auth]);
 
   return (
-    week &&
-    weekData && (
+    (week &&
+    weekData )&& (
       <Box>
         <Grid container>
           <Grid item xs={12}>
@@ -126,7 +124,7 @@ const OneWeek = ({ week }) => {
           </Grid>
         </Grid>
       </Box>
-    ) || <CircularProgress />
+     || <CircularProgress />)
   );
 };
 

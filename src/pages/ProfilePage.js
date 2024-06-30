@@ -85,37 +85,37 @@ const ProfilePage = () => {
             <Container maxWidth="md">
               <AllDialogs />
               <Box component="header" marginBottom={4}>
-          {/*
+                {/*
             <Typography variant="h5" textAlign="left" component="h3">
             {userData.firstName} {userData.lastName}
             </Typography>
           */}
-                    <Stack
-                      id="badgesList"
-                      direction="row"
-                      spacing={1}
-                      useFlexGap
-                      flexWrap="wrap"
-                      justifyContent="center"
-                      paddingX={2}
-                    >
-                      {userBadges().map((badge) => (
-                        <StaffBadge
-                          key={`badge-${userData.username}-${badge.type}`}
-                          size="small"
-                          variant="outlined"
-                          type={badge.type}
-                          label={badge.label}
-                        />
-                      ))}
-                    </Stack>
+                <Stack
+                  id="badgesList"
+                  direction="row"
+                  spacing={1}
+                  useFlexGap
+                  flexWrap="wrap"
+                  justifyContent="center"
+                  paddingX={2}
+                >
+                  {userBadges().map((badge) => (
+                    <StaffBadge
+                      key={`badge-${userData.username}-${badge.type}`}
+                      size="small"
+                      variant="outlined"
+                      type={badge.type}
+                      label={badge.label}
+                    />
+                  ))}
+                </Stack>
               </Box>
             </Container>
             <Grid
               container
-          my={3}
+              my={3}
               spacing={1}
-              alignItems="center"
+              alignItems="flex-start"
               justifyContent="center"
               width={1}
             >
@@ -169,15 +169,14 @@ const ProfilePage = () => {
                   Staff Obs.
                 </Button>
               </Grid>
-            </Grid>
-            <Box my={3}>
-              <CamperSearch />
-            </Box>
-            <Grid item xs={12} sm={12} md={7} lg={8}>
-          <MyWeeksTabbed />
-              <Stack spacing={1}>
-                <UserSchedule user={userData} sessions={userData.sessions} />
-              </Stack>
+          <Grid item xs={12}sm={3}>
+              <Box my={3} >
+                <CamperSearch />
+              </Box>
+          </Grid>
+              <Grid item xs={12} sm={12} md={7} lg={8}>
+                <MyWeeksTabbed weeks={userData.sessions} />
+              </Grid>
             </Grid>
           </>
         )}
@@ -193,7 +192,7 @@ const CamperSearch = () => {
 
   const handleChange = (e, v) => {
     setSelectedCamper(v);
-    const url = `/camper/${v.id}`
+    const url = `/camper/${v.id}`;
     navigate(url);
   };
   // effects
@@ -321,7 +320,7 @@ const UserSchedule = ({ sessions, user }) => {
               key={`session-select-${session.weekNumber}}`}
               value={session.weekNumber}
             >
-              Week {session.weekNumber}
+              Week {session.weekNumber - 1}
             </ToggleButton>
           ))}
         </ToggleButtonGroup>

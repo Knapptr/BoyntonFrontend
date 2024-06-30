@@ -14,11 +14,10 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import { useContext, useState, useEffect} from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import fetchWithToken from "../fetchWithToken";
 import UserContext from "./UserContext";
-
 
 const MyWeeksTabbed = ({ weeks }) => {
   const [currentTab, setCurrentTab] = useState(null);
@@ -73,11 +72,12 @@ const OneWeek = ({ week }) => {
     if (week.cabinSessionId) {
       getCabinList();
     }
-  }, [week,auth]);
+  }, [week, auth]);
 
   return (
-    (week &&
-    weekData )&& (
+    week &&
+    weekData &&
+    ((
       <Box>
         <Grid container>
           <Grid item xs={12}>
@@ -114,7 +114,9 @@ const OneWeek = ({ week }) => {
                     >
                       <ListItemText
                         primary={`${c.firstName} ${c.lastName}`}
-                        secondary={c.age}
+                        secondary={`${c.age} ${(c.dayCamp && "(day)") || ""} ${
+                          (c.fl && "(FL)") || ""
+                        }`}
                       />
                     </ListItemButton>
                   ))}
@@ -124,7 +126,7 @@ const OneWeek = ({ week }) => {
           </Grid>
         </Grid>
       </Box>
-     || <CircularProgress />)
+    ) || <CircularProgress />)
   );
 };
 

@@ -4,7 +4,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  CircularProgress,
   Grid,
   List,
   ListItemButton,
@@ -17,6 +16,8 @@ import {
 import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import fetchWithToken from "../fetchWithToken";
+import AllStaffSchedule from "../pages/AllStaffSchedule";
+import AdminThumbsAccordion from "./AdminThumbsAccordion";
 import UserContext from "./UserContext";
 
 const MyWeeksTabbed = ({ weeks }) => {
@@ -39,8 +40,26 @@ const MyWeeksTabbed = ({ weeks }) => {
     </Box>
   );
 };
-
-const OneWeek = ({ week }) => {
+const AdminWeek = ({ week }) => {
+  return (
+    <>
+      <Grid item xs={12}>
+        {week && <AdminThumbsAccordion weekNumber={week.weekNumber} />}
+      </Grid>
+      <Grid item xs={12}>
+        <Accordion>
+          <AccordionSummary expandIcon={<ArrowDropDown />}>
+            Staff Schedule
+          </AccordionSummary>
+          <AccordionDetails>
+            <AllStaffSchedule weekNum={week.weekNumber} />
+          </AccordionDetails>
+        </Accordion>
+      </Grid>
+    </>
+  );
+};
+const StaffWeek = ({ week }) => {
   const [weekData, setWeekData] = useState(null);
   const [cabinList, setCabinList] = useState([]);
   const auth = useContext(UserContext);
@@ -73,61 +92,66 @@ const OneWeek = ({ week }) => {
       getCabinList();
     }
   }, [week, auth]);
-
-  return (
-    week &&
-    weekData &&
-    ((
-      <Box>
-        <Grid container>
-          <Grid item xs={12}>
-            <Stack width={1} direction="row" flexWrap="wrap">
-              {weekData.map((day) => (
-                <List>
-                  <ListSubheader>{day.name}</ListSubheader>
-                  {day.periods.map((p) => (
-                    <ListItemButton
-                      component={Link}
-                      to={`/schedule/activity/${p.activitySessionId}`}
-                    >
-                      <ListItemText
-                        primary={p.activityName}
-                        secondary={`Act ${p.number}`}
-                      />
-                    </ListItemButton>
-                  ))}
-                </List>
+  return weekData && (
+    <>
+      <Grid item xs={12}>
+        <Stack width={1} direction="row" flexWrap="wrap">
+          {weekData.map((day) => (
+            <List>
+              <ListSubheader>{day.name}</ListSubheader>
+              {day.periods.map((p) => (
+                <ListItemButton
+                  component={Link}
+                  to={`/schedule/activity/${p.activitySessionId}`}
+                >
+                  <ListItemText
+                    primary={p.activityName}
+                    secondary={`Act ${p.number}`}
+                  />
+                </ListItemButton>
               ))}
-            </Stack>
-          </Grid>
-          <Grid item xs={12}>
-            <Accordion>
-              <AccordionSummary expandIcon={<ArrowDropDown />}>{`Cabin: ${
-                week.cabinAssignment || "Unassigned"
-              }`}</AccordionSummary>
-              <AccordionDetails>
-                <List dense>
-                  {cabinList.map((c) => (
-                    <ListItemButton
-                      component={Link}
-                      to={`/camper/${c.camperId}`}
-                    >
-                      <ListItemText
-                        primary={`${c.firstName} ${c.lastName}`}
-                        secondary={`${c.age} ${(c.dayCamp && "(day)") || ""} ${
-                          (c.fl && "(FL)") || ""
-                        }`}
-                      />
-                    </ListItemButton>
-                  ))}
-                </List>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-        </Grid>
-      </Box>
-    ) || <CircularProgress />)
+            </List>
+          ))}
+        </Stack>
+      </Grid>
+      <Grid item xs={12}>
+        <Accordion>
+          <AccordionSummary expandIcon={<ArrowDropDown />}>{`Cabin: ${
+            week.cabinAssignment || "Unassigned"
+          }`}</AccordionSummary>
+          <AccordionDetails>
+            <List dense>
+              {cabinList.map((c) => (
+                <ListItemButton component={Link} to={`/camper/${c.camperId}`}>
+                  <ListItemText
+                    primary={`${c.firstName} ${c.lastName}`}
+                    secondary={`${c.age} ${(c.dayCamp && "(day)") || ""} ${
+                      (c.fl && "(FL)") || ""
+                    }`}
+                  />
+                </ListItemButton>
+              ))}
+            </List>
+          </AccordionDetails>
+        </Accordion>
+      </Grid>
+    </>
   );
 };
 
-export default MyWeeksTabbed;
+const OneWeek = ({ week }) => {
+  const auth = useContext(UserContext);
+
+  const userType = auth.userData.user.role;
+  const renderType = () => {
+    switch (userType) {
+      case "admin":
+        return <AdminWeek week={week} />;
+      default:
+        return <StaffWeek week={week} />;
+    }
+  };
+  return <Grid container>{renderType()}</Grid>
+};
+
+export default MyWeeksTabbed

@@ -15,9 +15,13 @@ import { useParams } from "react-router-dom";
 import UserContext from "../components/UserContext";
 import fetchWithToken from "../fetchWithToken";
 
-const AllStaffSchedule = () => {
+const AllStaffSchedule = ({ weekNum }) => {
   const auth = useContext(UserContext);
-  const { weekNumber } = useParams("weekNumber");
+  let { weekNumber } = useParams("weekNumber");
+  if (weekNumber === undefined) {
+    weekNumber = weekNum;
+  }
+  console.log({ weekNumber });
   const [days, setDays] = useState([]);
 
   const getDayInfo = useCallback(async () => {
@@ -36,12 +40,15 @@ const AllStaffSchedule = () => {
   }, [getDayInfo]);
 
   return (
-      <Grid key={`staff-schedule-${weekNumber}`}container px={1} spacing={1}>
-        {days.map((d) => (
-          <Grid item xs={12} sm={6} key={`day-${d.id}`}>
+    <Grid key={`staff-schedule-${weekNumber}`} container px={1} spacing={1}>
+      {days.map((d) => (
+        <Grid item xs={12} sm={12} md={6} key={`day-${d.id}`}>
+          <Box position="sticky" top={58} bgcolor="secondary.main" zIndex={100}>
             <Typography variant="h6">{d.name}</Typography>
-            {d.periods.map((p) => (
-              <Box key={`period-${p.id}`}>
+          </Box>
+          {d.periods.map((p) => (
+            <Box key={`period-${p.id}`}>
+              <Box position="sticky" top={82} zIndex={100}>
                 <Link href={`/schedule/attendance/${p.id}`}>
                   <Typography
                     fontWeight="bold"
@@ -52,34 +59,39 @@ const AllStaffSchedule = () => {
                     Act {p.number}
                   </Typography>
                 </Link>
-                <Grid mt={0.1} px={3} container spacing={1}>
-                  {p.activities.map((a) => (
-                    <Grid item xs={6} md={2} key={`activity-${a.sessionId}`}>
-                      <Typography color="white" bgcolor="secondary.main">
-                        {a.name}
-                      </Typography>
-                      <Box px={1}>
-                        <List dense>
-                          {a.staff.map((s) => (
-                              <ListItem
-                                sx={{ p: 0.1 }}
-                                key={`staff-${s.username}`}
-                              >
-                                <ListItemText
-                                  primary={`${s.firstName} ${s.lastName[0]}.`}
-                                />
-                              </ListItem>
-                          ))}
-                        </List>
-                      </Box>
-                    </Grid>
-                  ))}
-                </Grid>
               </Box>
-            ))}
-          </Grid>
-        ))}
-      </Grid>
+              <Grid mt={0.1} px={3} container gap={1}>
+                {p.activities.map((a) => (
+                  <Grid
+                    item
+                    xs={12}
+                    md={5.8}
+                    key={`activity-${a.sessionId}`}
+                    border="solid"
+                    borderColor="black"
+                  >
+                    <Typography color="white" bgcolor="secondary.main">
+                      {a.name}
+                    </Typography>
+                    <Box px={1}>
+                      <List dense>
+                        {a.staff.map((s) => (
+                          <ListItem sx={{ p: 0.1 }} key={`staff-${s.username}`}>
+                            <ListItemText
+                              primary={`${s.firstName} ${s.lastName[0]}.`}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          ))}
+        </Grid>
+      ))}
+    </Grid>
   );
 };
 export default AllStaffSchedule;

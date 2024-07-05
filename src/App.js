@@ -30,6 +30,7 @@ import ActivityInfo from "./pages/Activity";
 import { RegistrationPage, RegistrationIndex } from "./pages/Registration";
 import UserAdminPage from "./pages/UserAdminPage";
 import ActivityList from "./pages/ActivityList";
+import AdminThumbs from "./pages/AdminThumbs";
 
 function App() {
   return (
@@ -136,6 +137,12 @@ function App() {
                     <UsersPage />
                   </RoleProtected>
                 }
+              />
+              <Route
+                path="admin/thumbsup/:weekNumber"
+                element=<RoleProtected role="admin">
+                  <AdminThumbs />
+                </RoleProtected>
               />
               <Route path="schedule">
                 <Route

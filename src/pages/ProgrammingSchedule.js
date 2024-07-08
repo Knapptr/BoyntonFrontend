@@ -148,7 +148,10 @@ const ProgrammingSchedule = () => {
   };
 
   const [waitingForDeleteRequest, setWaitingForDeleteRequest] = useState([]);
+
   const handleDeleteRequest = async (activitySessionId) => {
+    const confirmation = window.confirm("Are you sure you want to delete that activity? It will unassign all campers and staff members already assigned");
+    if(!confirmation){return;}
     setWaitingForDeleteRequest((r) => [...r, activitySessionId]);
     const response = await requestDeleteActivitySession(activitySessionId);
     if (response.status !== 202) {

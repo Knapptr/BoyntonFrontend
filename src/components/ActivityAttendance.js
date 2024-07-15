@@ -204,7 +204,7 @@ const ActivityAttendance = ({
                 .map((camper, camperIndex) => (
                   <CamperAttendant
                     camperSelection={camperSelection}
-                    key={`camper-${activity.name}-${camper.weekId}`}
+                    key={`camper-${activity.name}-${camper.sessionId}`}
                     toggleIsPresent={toggleHere}
                     camperIndex={camperIndex}
                     camper={camper}

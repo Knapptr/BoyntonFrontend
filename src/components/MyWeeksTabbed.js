@@ -92,6 +92,10 @@ const StaffWeek = ({ week }) => {
       getCabinList();
     }
   }, [week, auth]);
+  const displayLocation = (location) =>{
+    if(location!== null){return location};
+    return "TBD";
+  }
   return weekData && (
     <>
       <Grid item xs={12}>
@@ -105,7 +109,7 @@ const StaffWeek = ({ week }) => {
                   to={`/schedule/activity/${p.activitySessionId}`}
                 >
                   <ListItemText
-                    primary={p.activityName}
+                    primary={`${p.activityName}  @ ${displayLocation(p.location)}`}
                     secondary={`Act ${p.number}`}
                   />
                 </ListItemButton>

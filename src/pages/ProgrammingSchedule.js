@@ -24,6 +24,10 @@ import {
   ToggleButtonGroup,
   ToggleButton,
   Chip,
+  FormControl,
+  MenuItem,
+  Select,
+  InputLabel,
 } from "@mui/material";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { useParams } from "react-router-dom";
@@ -40,19 +44,21 @@ const ProgrammingSchedule = () => {
   const auth = useContext(UserContext);
   const { weekNumber } = useParams();
 
-  const data =useGetDataOnMount({
+  const data = useGetDataOnMount({
     url: "/api/activities",
     initialState: [],
     useToken: true,
   });
   // To avoid destructuring from get data, but also avoid unused linter errors :/
-  const [activities, updateActivities] = [data[0],data[2]];
+  const [activities, updateActivities] = [data[0], data[2]];
   //
   // selectedWeekId is mainly concerned with the selection menu and UI logic
   // current Week is data fetched from /api/weeks/:weekid
   const [currentWeek, setCurrentWeek] = useState(undefined);
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
+
+  const [locations, setLocations] = useState([]);
 
   const handleDaySelect = (e) => {
     setSelectedDayIndex(Number.parseInt(e.target.value));
@@ -71,10 +77,21 @@ const ProgrammingSchedule = () => {
     setCurrentWeek(data);
   }, [auth, weekNumber]);
 
-  // get week on page load
+  const getLocations = useCallback(async () => {
+    const url = "/api/activity-locations";
+    const response = await fetchWithToken(url, {}, auth);
+    if (!response.ok) {
+      console.error("Error getting activity Locations");
+    }
+    const data = await response.json();
+    setLocations(data);
+  }, [auth]);
+
+  // get week AND location on page load
   useEffect(() => {
     getWeek();
-  }, [getWeek]);
+    getLocations();
+  }, [getWeek, getLocations]);
 
   const [createActivityData, setCreateActivityData] = useState({
     showWindow: false,
@@ -150,8 +167,12 @@ const ProgrammingSchedule = () => {
   const [waitingForDeleteRequest, setWaitingForDeleteRequest] = useState([]);
 
   const handleDeleteRequest = async (activitySessionId) => {
-    const confirmation = window.confirm("Are you sure you want to delete that activity? It will unassign all campers and staff members already assigned");
-    if(!confirmation){return;}
+    const confirmation = window.confirm(
+      "Are you sure you want to delete that activity? It will unassign all campers and staff members already assigned"
+    );
+    if (!confirmation) {
+      return;
+    }
     setWaitingForDeleteRequest((r) => [...r, activitySessionId]);
     const response = await requestDeleteActivitySession(activitySessionId);
     if (response.status !== 202) {
@@ -163,6 +184,26 @@ const ProgrammingSchedule = () => {
     setWaitingForDeleteRequest((r) =>
       r.filter((aid) => aid.activitySessionId !== activitySessionId)
     );
+  };
+
+  const updateWeek = ()=>{
+    getWeek();
+  }
+  const handleLocationChange = (activitySessionId) => async (e) => {
+    const value = e.target.value;
+    const url = `/api/activity-sessions/${activitySessionId}/location`;
+    const options = {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ name: value }),
+    };
+    const result = await fetchWithToken(url, options, auth);
+    if (!result.ok) {
+      console.error("Error changing location");
+      return;
+    }
+    updateWeek();
+    console.log("Location set succesfully");
   };
 
   return (
@@ -231,8 +272,20 @@ const ProgrammingSchedule = () => {
                   alignItems="start"
                   spacing={0.5}
                 >
-                  <Grid item xs={12} component="header" position="relative" bgcolor="secondary.main">
-                {period.allWeek && <Chip sx={{position:"absolute",top:4,left:4}}color="primary" label="All Week"/>}
+                  <Grid
+                    item
+                    xs={12}
+                    component="header"
+                    position="relative"
+                    bgcolor="secondary.main"
+                  >
+                    {period.allWeek && (
+                      <Chip
+                        sx={{ position: "absolute", top: 4, left: 4 }}
+                        color="primary"
+                        label="All Week"
+                      />
+                    )}
                     <Typography variant="h6">Act {period.number}</Typography>
 
                     <IconButton
@@ -261,6 +314,25 @@ const ProgrammingSchedule = () => {
                       {period.activities.map((activity) => (
                         <ListItem key={`activity-list-${activity.sessionId}`}>
                           <ListItemText>{activity.name}</ListItemText>
+                          <ListItemText>
+                            <FormControl fullWidth>
+                              <InputLabel id={`${activity.sessionId}-location`}>
+                                Location
+                              </InputLabel>
+                              <Select
+                                labelId={`${activity.sessionId}-location`}
+                                id={`${activity.sessionId}-location-select`}
+                                value={activity.location}
+                                label="Location"
+                                onChange={handleLocationChange(activity.sessionId)}
+                              >
+                                {locations.map((l) => (
+                                  <MenuItem value={l.name}>{l.name}</MenuItem>
+                                ))}
+                                <MenuItem value={""}>unassigned</MenuItem>
+                              </Select>
+                            </FormControl>
+                          </ListItemText>
                           <IconButton
                             disabled={waitingForDeleteRequest.includes(
                               activity.sessionId
@@ -322,7 +394,6 @@ const AddActivityBox = ({
 }) => {
   // get list of activities
 
-
   const [selectedActivity, setSelectedActivity] = useState(null);
   // const [selectedActivityId, setSelectedActivityId] = useState("");
 
@@ -337,8 +408,7 @@ const AddActivityBox = ({
   };
 
   // I don't know why this component is working without the input change handler.
-  const handleChange = (e) => {
-  };
+  const handleChange = (e) => {};
 
   const handleSubmit = async () => {
     if (selectedActivity !== undefined) {

@@ -160,7 +160,7 @@ const ActivityAttendance = ({
     component={Link}
     to={`/schedule/activity/${activity.sessionId}`}
               >
-                <Typography variant="h6">{activity.name}</Typography>
+                <Typography variant="h6">{activity.name} - @{activity.location}</Typography>
                 <Typography variant="subtitle1">
                   {activity.campers.length}
                 </Typography>

@@ -54,6 +54,7 @@ const ActivityInfo = () => {
                     </Typography>
                   </Box>
                   <Typography variant="h5">{activity.name}</Typography>
+                  <Typography variant="subtitle1">@ -{activity.location}</Typography>
                   <Typography variant="body1">
                     {activity.description}
                   </Typography>

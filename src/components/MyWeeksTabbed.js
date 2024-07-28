@@ -26,8 +26,12 @@ const MyWeeksTabbed = ({ weeks }) => {
     setCurrentTab(value);
   };
   return (
-    <Box>
-      <Tabs value={currentTab} onChange={handleChange}>
+    <Box >
+      <Tabs 
+    variant="scrollable"
+    scrollButtons
+    allowScrollButtonsMobile
+    value={currentTab} onChange={handleChange}>
         {weeks.map((week) => (
           <Tab
             label={`Week ${week.display}`}

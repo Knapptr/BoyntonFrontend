@@ -198,7 +198,7 @@ const OneCamper = () => {
                                     >
                                       <ListItemText
                                         primary={`Act ${periodNumber}`}
-                                        secondary={period.activity}
+                                        secondary={`${period.activity}-@ ${period.activityLocation || "TBD"}`}
                                       />
                                     </ListItem>
                                   </>

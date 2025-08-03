@@ -22,6 +22,7 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import MyWeeksTabbed from "../components/MyWeeksTabbed";
+import CommentsSoon from "../components/CommentsSoon";
 
 const ProfilePage = () => {
   const auth = useContext(UserContext);
@@ -161,6 +162,9 @@ const ProfilePage = () => {
               <Box my={3} >
                 <CamperSearch />
               </Box>
+          </Grid>
+              <Grid item xs={12} sm={12} md={7} lg={8}>
+<CommentsSoon />
           </Grid>
               <Grid item xs={12} sm={12} md={7} lg={8}>
                 <MyWeeksTabbed weeks={userData.sessions} />

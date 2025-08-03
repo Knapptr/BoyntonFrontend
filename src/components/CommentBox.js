@@ -32,6 +32,11 @@ const CommentBox = ({ comments, toggleCommentModal, refreshData }) => {
         >
           {comments.map((c) => (
             <Box>
+            {c.dueDate &&
+              <Typography align="left" color="secondary">
+                  On: {new Date(c.dueDate).toDateString()}
+            </Typography>
+            }
                 <Typography align="left">{c.content}</Typography>
             <Stack direction="row" alignItems="center" >
                 <Typography color="gray" align="left" variant="subtitle1" mr={2}>

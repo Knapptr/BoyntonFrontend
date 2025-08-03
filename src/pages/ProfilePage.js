@@ -23,9 +23,13 @@ import {
 import { useNavigate } from "react-router";
 import MyWeeksTabbed from "../components/MyWeeksTabbed";
 
+const SoonNote = ({comment})=>{
+return <Typography>{comment.first_name} {comment.last_name}: {comment.content}</Typography>
+}
 const ProfilePage = () => {
   const auth = useContext(UserContext);
   const [userData, setUserData] = useState(undefined);
+  const [comments, setComments] = useState([]);
   const { AllDialogs, handleDialogs } = useDialogs();
 
   const userBadges = () => {
@@ -49,6 +53,36 @@ const ProfilePage = () => {
     return response;
   }, [auth]);
 
+  const getDailyComments = useCallback(async ()=>{
+    const url = `api/camper-comment/soon`
+    const response = await fetchWithToken(url,{},auth);
+    return response;
+  }, [auth])
+
+  const handleGetComments = useCallback(async ()=>{
+    const response = await getDailyComments();
+    if (response.status !== 200) {
+      console.error("Big time error");
+    }
+    const comments = await response.json();
+    setComments(comments);
+  }, [getDailyComments])
+
+  const splitComments = ()=>{
+    const today = comments.filter(c=> {
+      const date = new Date(c.due_date);
+      return date.toDateString() === new Date().toDateString();
+  }
+    )
+    const tDate = new Date();
+    tDate.setDate(tDate.getDate() + 1)
+    const tomorrow = comments.filter(c=> {
+      const date = new Date(c.due_date);
+      return date.toDateString() === tDate.toDateString();
+  }
+    )
+    return {today,tomorrow}
+  }
   const handleGetUser = useCallback(async () => {
     const response = await getUserData();
     if (response.status !== 200) {
@@ -60,7 +94,8 @@ const ProfilePage = () => {
 
   useEffect(() => {
     handleGetUser();
-  }, [handleGetUser]);
+    handleGetComments()
+  }, [handleGetUser,handleGetComments]);
   return (
     <>
       <Helmet>
@@ -157,14 +192,32 @@ const ProfilePage = () => {
                   Staff Obs.
                 </Button>
               </Grid>
-          <Grid item xs={12}sm={3}>
-              <Box my={3} >
-                <CamperSearch />
-              </Box>
-          </Grid>
-              <Grid item xs={12} sm={12} md={7} lg={8}>
-                <MyWeeksTabbed weeks={userData.sessions} />
-              </Grid>
+            </Grid>
+            <Box my={1}>
+              <CamperSearch />
+            </Box>
+          {comments.length > 0 &&
+          <Box my={1}>
+              <Typography>Camper Notes</Typography>
+          <Stack direction="row" justifyContent="space-evenly" >
+          <Box >
+          <Typography>Today</Typography>
+            <Stack>
+            {splitComments().today.map(c=><SoonNote comment={c} />)}
+            </Stack>
+          </Box>
+          <Box>
+          <Typography>Tommorrow</Typography>
+            <Stack>
+            {splitComments().tomorrow.map(c=><SoonNote comment={c} />)}
+            </Stack>
+          </Box>
+          </Stack>
+          </Box>}
+            <Grid item xs={12} sm={12} md={7} lg={8}>
+              <Stack spacing={1}>
+                <UserSchedule user={userData} sessions={userData.sessions} />
+              </Stack>
             </Grid>
           </>
         )}

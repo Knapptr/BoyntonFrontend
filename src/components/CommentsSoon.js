@@ -32,7 +32,7 @@ const CommentsSoon = () => {
 
   const splitComments = () => {
     const today = comments.filter((c) => {
-      const date = new Date(c.due_date);
+      const date = new UTCDate(c.due_date);
       console.log(date.toDateString(), new Date().toDateString());
       return format(date,"E LLL d") === format(new Date(), "E LLL d");
     });

@@ -34,7 +34,7 @@ const CommentBox = ({ comments, toggleCommentModal, refreshData }) => {
             <Box>
             {c.dueDate &&
               <Typography align="left" color="secondary">
-                  On: {new Date(c.dueDate).toDateString()}
+                  On: {new Date(c.dueDate).toString().split(/\d\d\:/)[0]}
             </Typography>
             }
                 <Typography align="left">{c.content}</Typography>

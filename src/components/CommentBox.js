@@ -1,4 +1,5 @@
 import { Divider,Typography,Button } from "@mui/material";
+import { UTCDate } from "@date-fns/utc";
 import { Box, Stack } from "@mui/system";
 import { useContext } from "react";
 import fetchWithToken from "../fetchWithToken";
@@ -34,7 +35,7 @@ const CommentBox = ({ comments, toggleCommentModal, refreshData }) => {
             <Box>
             {c.dueDate &&
               <Typography align="left" color="secondary">
-                  On: {new Date(c.dueDate).toString().split(/\d\d:/)[0]}
+                  On: {new UTCDate(c.dueDate).toString().split(/\d\d:/)[0]}
             </Typography>
             }
                 <Typography align="left">{c.content}</Typography>

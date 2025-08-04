@@ -44,7 +44,7 @@ const CommentsSoon = () => {
 
   useEffect(()=>{
     handleGetComments();
-  },{handleGetComments})
+  },[handleGetComments])
 
   if (comments.length > 0) {
     return <Box my={1}>

@@ -31,13 +31,13 @@ const CommentsSoon = () => {
   const splitComments = () => {
     const today = comments.filter((c) => {
       const date = new Date(c.due_date);
-      return date.toDateString() === new Date().toString().split(/\d\d\:/)[0]
+      return date.toDateString() === new Date().toString().split(/\d\d:/)[0]
     });
     const tDate = new Date();
     tDate.setDate(tDate.getDate() + 1);
     const tomorrow = comments.filter((c) => {
       const date = new Date(c.due_date);
-      return date.toDateString() === tDate.toString().split(/\d\d\:/)[0]
+      return date.toDateString() === tDate.toString().split(/\d\d:/)[0]
     });
     return { today, tomorrow };
   };

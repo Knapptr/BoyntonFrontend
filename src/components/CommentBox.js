@@ -5,6 +5,7 @@ import { useContext } from "react";
 import fetchWithToken from "../fetchWithToken";
 import usePops from "../hooks/usePops";
 import UserContext from "./UserContext";
+import { format } from "date-fns";
 
 const CommentBox = ({ comments, toggleCommentModal, refreshData }) => {
   const auth = useContext(UserContext);
@@ -35,7 +36,7 @@ const CommentBox = ({ comments, toggleCommentModal, refreshData }) => {
             <Box>
             {c.dueDate &&
               <Typography align="left" color="secondary">
-                  On: {new UTCDate(c.dueDate).toString().split(/\d\d:/)[0]}
+                  On: {format(new UTCDate(c.dueDate), "E LLL d")}
             </Typography>
             }
                 <Typography align="left">{c.content}</Typography>

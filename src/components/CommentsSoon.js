@@ -1,6 +1,7 @@
 import { UTCDate } from "@date-fns/utc";
 import { Stack, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { format } from "date-fns";
 import { useCallback, useContext, useEffect, useState } from "react";
 import fetchWithToken from "../fetchWithToken";
 import UserContext from "./UserContext";
@@ -31,14 +32,15 @@ const CommentsSoon = () => {
 
   const splitComments = () => {
     const today = comments.filter((c) => {
-      const date = new UTCDate(c.due_date);
-      return date.toDateString() === new Date().toString().split(/\d\d:/)[0]
+      const date = new Date(c.due_date);
+      console.log(date.toDateString(), new Date().toDateString());
+      return format(date,"E LLL d") === format(new Date(), "E LLL d");
     });
     const tDate = new Date();
     tDate.setDate(tDate.getDate() + 1);
     const tomorrow = comments.filter((c) => {
       const date = new UTCDate(c.due_date);
-      return date.toDateString() === tDate.toString().split(/\d\d:/)[0]
+      return format(date,"E LLL d") === format(tDate, "E LLL d");
     });
     return { today, tomorrow };
   };

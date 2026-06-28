@@ -44,6 +44,13 @@ const menus ={
       reqRole: "programming",
       icon: <SportsBasketball />
     },
+    { type: "dialog",
+      // href: "/schedule/programming/print",
+      label: "Print Schedule",
+      dialog: "printSchedule",
+      reqRole: "admin",
+      icon: <SportsBasketball />
+    }
   ],
   campers: [
     {

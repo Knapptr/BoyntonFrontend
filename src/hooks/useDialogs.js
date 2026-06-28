@@ -60,6 +60,13 @@ const useDialogs = () => {
           url="/cabins/list"
         />
 
+        {/* Schedule print */}
+        <WeekSelectDialog
+          title="Print Schedule"
+          open={openDialog === "printSchedule"}
+          onClose={handleClose}
+          url="/schedule/print"
+        />
         {/* Programming */}
         <WeekSelectDialog
           title="Edit Activity Schedule"

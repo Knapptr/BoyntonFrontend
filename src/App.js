@@ -12,6 +12,7 @@ import UsersPage from "./pages/UsersPage";
 import StaffSchedule from "./pages/StaffSchedule";
 import ProfilePage from "./pages/ProfilePage";
 import CreateAward from "./pages/CreateAward";
+import PrintSchedule from "./pages/PrintSchedule.js";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -150,6 +151,14 @@ function App() {
                   element={
                     <RoleProtected role="programming">
                       <ActivityList />
+                    </RoleProtected>
+                  }
+                />
+                <Route
+                  path="print/:weekNumber"
+                  element={
+                    <RoleProtected role="admin">
+                      <PrintSchedule />
                     </RoleProtected>
                   }
                 />

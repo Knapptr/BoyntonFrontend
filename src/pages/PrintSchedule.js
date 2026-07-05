@@ -90,6 +90,9 @@ const PrintList = () => {
         <>
         <Box mx={"auto"} maxWidth={"1000px"}>
         <Typography variant="h4">{activity.name}</Typography>
+        <Typography variant="subtitle2">{activity.location}</Typography>
+        <Typography variant="subtitle3">{activity.campers.length} camper(s) </Typography>
+        <Stack direction={"row"} spacing={3}>{activity.staff.map(staff=><Box>{`${staff.firstName} ${staff.lastName[0]}`}</Box>)}</Stack>
         <Typography variant="subtitle1">{`${schedule.days[selectedDayIndex].name} Act ${period.number}`}</Typography>
         <TableContainer>
         <Table size={"small"}>

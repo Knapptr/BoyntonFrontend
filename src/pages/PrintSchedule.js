@@ -94,6 +94,11 @@ const PrintList = () => {
         <Typography variant="subtitle3">{activity.campers.length} camper(s) </Typography>
         <Stack direction={"row"} spacing={3}>{activity.staff.map(staff=><Box>{`${staff.firstName} ${staff.lastName[0]}`}</Box>)}</Stack>
         <Typography variant="subtitle1">{`${schedule.days[selectedDayIndex].name} Act ${period.number}`}</Typography>
+        <hr/>
+        <Typography variant="subtitle3">Remember to star any awards, and write down FL observations</Typography>
+        <br/>
+        <Typography variant="subtitle3">Return this sheet to the bin in the radio room at the end of the activity</Typography>
+        <hr/>
         <TableContainer>
         <Table size={"small"}>
         <TableHead>

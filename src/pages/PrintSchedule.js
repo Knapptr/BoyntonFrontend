@@ -85,7 +85,7 @@ const PrintList = () => {
         </Stack>
     <Box> 
     {schedule.days && schedule.days[selectedDayIndex].periods.map(period=><Box>
-      <h1>{`Week ${weekNumber} - ${schedule.days[selectedDayIndex].name}`}</h1>
+      <h1>{`Week ${schedule.display} - ${schedule.days[selectedDayIndex].name}`}</h1>
       {period.activities.map(activity=> 
         <>
         <Box mx={"auto"} maxWidth={"1000px"}>
